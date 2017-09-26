@@ -19,13 +19,12 @@
     "express": "^4.15.2",
     "express-no-favicons": "^0.0.1",
     "history": "^4.6.3",
+    "mobx": "^3.3.0",
     "react": "^16.0.0-rc.3",
     "react-dom": "^16.0.0-rc.3",
     "react-emotion": "^7.3.2",
     "react-universal-component": "^2.5.1",
-    "webpack-flush-chunks": "^1.1.23"
-  },
-  "devDependencies": {
+    "webpack-flush-chunks": "^1.1.23",
     "babel-cli": "^6.24.0",
     "babel-core": "^6.24.0",
     "babel-eslint": "^7.2.3",
