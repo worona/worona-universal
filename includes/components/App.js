@@ -3,6 +3,7 @@ import universal from 'react-universal-component'
 import Loading from './Loading'
 import NotFound from './NotFound'
 import { pages, nextIndex, indexFromPath } from '../utils'
+import styled from 'react-emotion';
 
 const UniversalComponent = universal(props => import(`./${props.page}`), {
   minDelay: 1200,
@@ -79,9 +80,9 @@ export default class App extends React.Component {
           onError={this.handleError}
         />
 
-        <button onClick={this.changePage}>
+        <Button onClick={this.changePage}>
           {this.buttonText()}
-        </button>
+        </Button>
 
         <p>
           <span>*why are you looking at this? refresh the page</span>
@@ -91,3 +92,7 @@ export default class App extends React.Component {
     )
   }
 }
+
+const Button = styled.button`
+  background-color: green;
+`

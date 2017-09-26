@@ -2,15 +2,17 @@ const path = require('path');
 const webpack = require('webpack');
 const WriteFilePlugin = require('write-file-webpack-plugin'); // here so you can see what chunks are built
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
+const AutoDllPlugin = require('autodll-webpack-plugin');
 
 const publicPath = process.env.PUBLIC_PATH ? `${process.env.PUBLIC_PATH}static/` : '/static/';
 
 module.exports = {
   name: 'client',
   target: 'web',
-  devtool: 'eval',
+  // devtool: 'eval',
   entry: [
-    `webpack-hot-middleware/client?path=${process.env.PUBLIC_PATH || '/'}__webpack_hmr&timeout=20000&reload=false&quiet=false&noInfo=false`,
+    `webpack-hot-middleware/client?path=${process.env.PUBLIC_PATH ||
+      '/'}__webpack_hmr&timeout=20000&reload=false&quiet=false&noInfo=false`,
     'react-hot-loader/patch',
     path.resolve(__dirname, '../includes/index.js'),
   ],
@@ -56,6 +58,12 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.PUBLIC_PATH': JSON.stringify(publicPath),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
+    new AutoDllPlugin({
+      filename: '[name].js',
+      entry: {
+        vendors: ['react', 'react-dom', 'react-emotion', 'mobx'],
+      },
     }),
   ],
 };

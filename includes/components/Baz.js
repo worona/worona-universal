@@ -1,6 +1,11 @@
-import React from 'react'
+import React from 'react';
+import { observable } from 'mobx';
 
-export default () =>
+const map = observable.map({ key: "value"});
+map.set("key", "new value");
+
+export default () => (
   <div>
     <span>Baz -- loaded!!!!</span>
   </div>
+);
