@@ -22,7 +22,6 @@ export default ref => (req, res) => {
 
   const { css } = extractCritical(app);
 
-  scripts.push('vendors.js');
   const chunksForArray = scripts
     .filter(sc => !/bootstrap/.test(sc))
     .map(sc => `'${sc}'`)
