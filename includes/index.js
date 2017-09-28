@@ -8,13 +8,14 @@ import App from './components/App';
 
 const history = createHistory();
 
-const render = Component =>
+const render = async Component => {
   ReactDOM.hydrate(
     <AppContainer>
       <Component history={history} />
     </AppContainer>,
     document.getElementById('root')
   );
+}
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./components/App.js', () => {
