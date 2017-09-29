@@ -5,7 +5,7 @@ module.exports = {
   name: 'server',
   target: 'node',
   devtool: 'source-map',
-  entry: [path.resolve(__dirname, '../includes/ssr.js')],
+  entry: [path.resolve(__dirname, '../includes/init/server.js')],
   output: {
     path: path.resolve(__dirname, '../.worona/buildServer'),
     filename: '[name].js',

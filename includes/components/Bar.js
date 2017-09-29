@@ -1,10 +1,10 @@
-import React from 'react'
-import { observable } from 'mobx';
+import React from 'react';
+import { inject } from 'mobx-react';
 
-const map = observable.map({ key: "value"});
-map.set("key", "new value");
-
-export default () =>
+export default inject(stores => ({
+  color: stores.color,
+}))(({ color }) => (
   <div>
-    <span>Bar -- loaded!!</span>
+    <span>Bar -- loaded!! {color}</span>
   </div>
+));

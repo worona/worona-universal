@@ -18,7 +18,7 @@ module.exports = {
   name: 'server',
   target: 'node',
   devtool: 'eval',
-  entry: [path.resolve(__dirname, '../includes/ssr.js')],
+  entry: [path.resolve(__dirname, '../includes/init/server.js')],
   externals,
   output: {
     path: path.resolve(__dirname, '../.worona/buildServer'),
