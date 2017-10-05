@@ -6,6 +6,7 @@ import createHistory from 'history/createMemoryHistory';
 import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import { extractCritical } from 'emotion-server';
+import { Helmet } from 'react-helmet';
 import { buildPath } from '../../.worona/buildInfo.json';
 import stores from './stores';
 import App from './App';
@@ -18,13 +19,11 @@ export default ref => (req, res) => {
   const { styles, cssHash, scripts, stylesheets } = flushChunks(ref.clientStats, { chunkNames });
 
   const { css } = extractCritical(app);
+  const helmet = Helmet.renderStatic();
 
-  const scriptsWithoutBootstrap = scripts
-    .filter(sc => !/bootstrap/.test(sc));
+  const scriptsWithoutBootstrap = scripts.filter(sc => !/bootstrap/.test(sc));
 
-  const chunksForArray = scriptsWithoutBootstrap
-    .map(sc => `'${sc}'`)
-    .join(',');
+  const chunksForArray = scriptsWithoutBootstrap.map(sc => `'${sc}'`).join(',');
   const bootstrapFileName = scripts.filter(sc => /bootstrap/.test(sc));
   const bootstrapString = fs.readFileSync(
     `${buildPath}/.worona/buildClient/${bootstrapFileName}`,
@@ -44,16 +43,18 @@ export default ref => (req, res) => {
 
   res.send(
     `<!doctype html>
-      <html>
+      <html ${helmet.htmlAttributes.toString()}>
         <head>
           <meta charset="utf-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-          <title>Worona</title>
           ${styles}
           ${preloadScripts}
+          ${helmet.title.toString()}
+          ${helmet.meta.toString()}
+          ${helmet.link.toString()}
           <style>${css}</style>
         </head>
-        <body>
+        <body ${helmet.bodyAttributes.toString()}>
           <div id="root">${app}</div>
           ${cssHash}
           <script>
