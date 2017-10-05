@@ -10,10 +10,10 @@ import App from './App';
 
 const history = createHistory();
 
-const render = async (Component, st = stores) => {
+const render = async (Component, store) => {
   ReactDOM.hydrate(
     <AppContainer>
-      <Component history={history} stores={st} />
+      <Component history={history} stores={store} />
     </AppContainer>,
     document.getElementById('root')
   );
@@ -27,4 +27,4 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
   });
 }
 
-render(App);
+render(App, stores);

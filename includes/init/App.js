@@ -11,9 +11,9 @@ let Color = ({ color, colorAndNumber, toggleColor }) => [
 ];
 
 Color = inject(({ stores }) => ({
-  color: stores.stores.color,
-  colorAndNumber: stores.stores.colorAndNumber,
-  toggleColor: stores.stores.toggleColor,
+  color: stores.color,
+  colorAndNumber: stores.colorAndNumber,
+  toggleColor: stores.toggleColor,
 }))(Color);
 
 const App = ({ stores }) => (
