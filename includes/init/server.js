@@ -19,8 +19,10 @@ export default ref => (req, res) => {
 
   const { css } = extractCritical(app);
 
-  const chunksForArray = scripts
-    .filter(sc => !/bootstrap/.test(sc))
+  const scriptsWithoutBootstrap = scripts
+    .filter(sc => !/bootstrap/.test(sc));
+
+  const chunksForArray = scriptsWithoutBootstrap
     .map(sc => `'${sc}'`)
     .join(',');
   const bootstrapFileName = scripts.filter(sc => /bootstrap/.test(sc));
@@ -28,6 +30,11 @@ export default ref => (req, res) => {
     `${buildPath}/.worona/buildClient/${bootstrapFileName}`,
     'utf8'
   );
+  const preloadScripts = scriptsWithoutBootstrap
+    .map(sc => `<link rel="preload" href="/static/${sc}" as="script">`)
+    .join('\n');
+
+  console.log('WARNING: Preload public path is still not working.');
 
   console.log('> Path: ', req.path);
   console.log('> Dynamic chunks rendered: ', chunkNames);
@@ -43,6 +50,7 @@ export default ref => (req, res) => {
           <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
           <title>Worona</title>
           ${styles}
+          ${preloadScripts}
           <style>${css}</style>
         </head>
         <body>
