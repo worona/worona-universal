@@ -18,15 +18,15 @@ const webpackPromise = (clientConfig, serverConfig) =>
 
 const clean = () => {
   // Delete current build.
-  rimraf.sync('.worona');
+  rimraf.sync('build/pwa');
 
   // Create info file.
-  mkdirp.sync('.worona');
+  mkdirp.sync('build/pwa');
   const buildInfo = {
-    buildPath: path.resolve(__dirname, '..'),
+    buildPath: path.resolve(__dirname, '../..'),
     nodeEnv: dev ? 'development' : 'production',
   };
-  fs.writeFileSync('.worona/buildInfo.json', JSON.stringify(buildInfo, null, 2));
+  fs.writeFileSync('build/pwa/buildInfo.json', JSON.stringify(buildInfo, null, 2));
 };
 
 const build = async () => {
@@ -34,16 +34,16 @@ const build = async () => {
   clean();
   // Import proper configuration files.
   const clientConfig = dev
-    ? require('../scripts/webpack.client.dev')
-    : require('../scripts/webpack.client.prod');
+    ? require('./webpack.client.dev')
+    : require('./webpack.client.prod');
   const serverConfig = dev
-    ? require('../scripts/webpack.server.dev')
-    : require('../scripts/webpack.server.prod');
+    ? require('./webpack.server.dev')
+    : require('./webpack.server.prod');
 
   // Run webpack and wait until it finishes. Then save clientStats to a file.
   const stats = await webpackPromise(clientConfig, serverConfig);
   const clientStats = stats.toJson().children[0];
-  fs.writeFileSync('.worona/clientStats.json', JSON.stringify(clientStats, null, 2));
+  fs.writeFileSync('build/pwa/clientStats.json', JSON.stringify(clientStats, null, 2));
 
   // Return webpack stats.
   return stats;

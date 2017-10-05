@@ -7,9 +7,9 @@
   "author": "luis@worona.org",
   "license": "MIT",
   "scripts": {
-    "start": "node scripts/index.js",
-    "build": "node scripts/index.js --build",
-    "server": "node scripts/index.js --server",
+    "start:pwa": "node scripts/pwa/index.js",
+    "build:pwa": "node scripts/pwa/index.js --build",
+    "serve:pwa": "node scripts/pwa/index.js --server",
     "postinstall": "npm-recursive-install --skip-root"
   },
   "dependencies": {

@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const WriteFilePlugin = require('write-file-webpack-plugin'); // here so you can see what chunks are built
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const vendors = require('./vendors');
 
@@ -9,18 +8,12 @@ const publicPath = process.env.PUBLIC_PATH ? `${process.env.PUBLIC_PATH}static/`
 module.exports = {
   name: 'client',
   target: 'web',
-  devtool: 'eval',
-  entry: [
-    ...vendors,
-    `webpack-hot-middleware/client?path=${process.env.PUBLIC_PATH ||
-      '/'}__webpack_hmr&timeout=20000&reload=false&quiet=false&noInfo=false`,
-    'react-hot-loader/patch',
-    path.resolve(__dirname, '../includes/init/client.js'),
-  ],
+  devtool: 'source-map',
+  entry: [...vendors, path.resolve(__dirname, '../../includes/pwa/init/client.js')],
   output: {
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-    path: path.resolve(__dirname, '../.worona/buildClient'),
+    filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
+    path: path.resolve(__dirname, '../../build/pwa/client'),
   },
   module: {
     rules: [
@@ -46,16 +39,27 @@ module.exports = {
     ],
   },
   plugins: [
-    new WriteFilePlugin(),
     new ExtractCssChunks(),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['bootstrap'], // needed to put webpack bootstrap code before chunks
-      filename: '[name].js',
+      filename: '[name].[chunkhash].js',
       minChunks: Infinity,
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.WatchIgnorePlugin([/\.worona/]),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        screw_ie8: true,
+        warnings: false,
+      },
+      mangle: {
+        screw_ie8: true,
+      },
+      output: {
+        screw_ie8: true,
+        comments: false,
+      },
+      sourceMap: true,
+    }),
+    new webpack.HashedModuleIdsPlugin(), // not needed for strategy to work (just good practice)
     new webpack.DefinePlugin({
       'process.env.PUBLIC_PATH': JSON.stringify(publicPath),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),

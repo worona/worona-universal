@@ -5,9 +5,9 @@ module.exports = {
   name: 'server',
   target: 'node',
   devtool: 'source-map',
-  entry: [path.resolve(__dirname, '../includes/init/server.js')],
+  entry: [path.resolve(__dirname, '../../includes/pwa/init/server.js')],
   output: {
-    path: path.resolve(__dirname, '../.worona/buildServer'),
+    path: path.resolve(__dirname, '../../build/pwa/server'),
     filename: '[name].js',
     libraryTarget: 'commonjs2',
   },

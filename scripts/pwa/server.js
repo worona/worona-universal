@@ -8,8 +8,8 @@ const createServer = app => {
     const server = require('https').createServer;
     const readFileSync = require('fs').readFileSync;
     const options = {
-      key: readFileSync('./scripts/certs/worona.localhost.key'),
-      cert: readFileSync('./scripts/certs/worona.localhost.crt'),
+      key: readFileSync('./scripts/certs/localhost.key'),
+      cert: readFileSync('./scripts/certs/localhost.crt'),
     };
     return server(options, app);
   }
@@ -41,13 +41,13 @@ const createApp = () => {
 const serverProd = () => {
   const { app, done } = createApp();
   // Check if a production build has been generated.
-  const nodeEnv = require('../.worona/buildInfo.json').nodeEnv;
+  const nodeEnv = require('../../build/pwa/buildInfo.json').nodeEnv;
   if (nodeEnv !== 'production') throw new Error("Please, run 'npm run build -- --prod' first.");
 
   // Start server with the clientStats.
-  const clientStats = require('../.worona/clientStats.json');
-  const serverRender = require('../.worona/buildServer/main.js').default;
-  app.use('/static', express.static('.worona/buildClient/'));
+  const clientStats = require('../../build/pwa/clientStats.json');
+  const serverRender = require('../../build/pwa/server/main.js').default;
+  app.use('/static', express.static('build/pwa/client/'));
   app.use(serverRender({ clientStats }));
   done();
 };

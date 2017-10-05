@@ -22,8 +22,8 @@ const startDev = async () => {
   const { app, done } = createApp();
 
   // Import proper configuration files.
-  const clientConfig = require('../scripts/webpack.client.dev');
-  const serverConfig = require('../scripts/webpack.server.dev');
+  const clientConfig = require('./webpack.client.dev');
+  const serverConfig = require('./webpack.server.dev');
 
   // Create webpack compilations.
   const compiler = webpack([clientConfig, serverConfig]);
@@ -31,7 +31,7 @@ const startDev = async () => {
   const options = { publicPath, stats: { colors: true } };
 
   // Configure Express server.
-  app.use('/static', express.static(path.resolve(__dirname, '../.worona/buildClient')));
+  app.use('/static', express.static(path.resolve(__dirname, '../../build/pwa/client')));
   app.use(webpackDevMiddleware(compiler, options));
   app.use(webpackHotMiddleware(clientCompiler));
   app.use(webpackHotServerMiddleware(compiler));
