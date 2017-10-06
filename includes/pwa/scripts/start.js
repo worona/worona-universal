@@ -7,7 +7,7 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const webpackHotServerMiddleware = require('webpack-hot-server-middleware');
 const { clean, build } = require('./build');
-const { createApp, serverProd } = require('./server');
+const { createApp, serverProd } = require('./serve');
 
 const argv = require('minimist')(process.argv.slice(2));
 
@@ -31,7 +31,7 @@ const startDev = async () => {
   const options = { publicPath, stats: { colors: true } };
 
   // Configure Express server.
-  app.use('/static', express.static(path.resolve(__dirname, '../../build/pwa/client')));
+  app.use('/static', express.static(path.resolve(__dirname, '../../../build/pwa/client')));
   app.use(webpackDevMiddleware(compiler, options));
   app.use(webpackHotMiddleware(clientCompiler));
   app.use(webpackHotServerMiddleware(compiler));

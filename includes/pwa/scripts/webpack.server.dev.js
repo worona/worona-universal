@@ -8,7 +8,7 @@ const WriteFilePlugin = require('write-file-webpack-plugin');
 // `require-universal-module` so that they know they are running
 // within Webpack and can properly make connections to client modules:
 const externals = fs
-  .readdirSync(path.resolve(__dirname, '../../node_modules'))
+  .readdirSync(path.resolve(__dirname, '../../../node_modules'))
   .filter(x => !/\.bin|react-universal-component|webpack-flush-chunks/.test(x))
   .reduce((ext, mod) => ({ ...ext, mod: `commonjs ${mod}` }), {});
 
@@ -18,7 +18,7 @@ module.exports = {
   name: 'server',
   target: 'node',
   devtool: 'eval',
-  entry: [path.resolve(__dirname, '../../includes/pwa/init/server.js')],
+  entry: [path.resolve(__dirname, '../init/server.js')],
   externals,
   output: {
     path: path.resolve(__dirname, '../../build/pwa/server'),
@@ -52,6 +52,6 @@ module.exports = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
     }),
-    new webpack.WatchIgnorePlugin([/\.worona/]),
+    new webpack.WatchIgnorePlugin([/build/]),
   ],
 };

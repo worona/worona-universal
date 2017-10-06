@@ -6,7 +6,7 @@ const Stores = types
   })
   .views(self => ({
     get colorAndNumber() {
-      return `${self.color} and 8`;
+      return `${self.color} and 7`;
     },
   }))
   .actions(self => ({

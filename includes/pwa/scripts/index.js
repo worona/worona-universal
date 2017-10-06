@@ -28,10 +28,10 @@ if (!argv.server) {
 
 console.log();
 
-const args = ['scripts/pwa/start.js'];
+const args = ['includes/pwa/scripts/start.js'];
 
 if (argv.build) args.push('--build');
-else if (argv.server) args.push('--server');
+else if (argv.serve) args.push('--serve');
 
 if (argv.d || argv.debug) args.unshift('--inspect');
 

@@ -23,7 +23,7 @@ const clean = () => {
   // Create info file.
   mkdirp.sync('build/pwa');
   const buildInfo = {
-    buildPath: path.resolve(__dirname, '../..'),
+    buildPath: path.resolve(__dirname, '../../..'),
     nodeEnv: dev ? 'development' : 'production',
   };
   fs.writeFileSync('build/pwa/buildInfo.json', JSON.stringify(buildInfo, null, 2));
