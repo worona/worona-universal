@@ -29,12 +29,13 @@ export default ref => (req, res) => {
     `${buildPath}/build/pwa/client/${bootstrapFileName}`,
     'utf8'
   );
+
+  const publicPath = req.query.static ? req.query.static.replace(/\/$/g, '') : '';
   const preloadScripts = scriptsWithoutBootstrap
-    .map(sc => `<link rel="preload" href="/static/${sc}" as="script">`)
+    .map(sc => `<link rel="preload" href="${publicPath}/static/${sc}" as="script">`)
     .join('\n');
 
   console.log();
-  console.log('>>> WARNING: Preload public path is still not working.');
   console.log('> Path: ', req.path);
   console.log('> Dynamic chunks rendered: ', chunkNames);
   console.log('> Scripts served: ', scripts);
