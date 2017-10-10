@@ -1,17 +1,23 @@
 {
-  "presets": [
-    ["env", {
-      "targets": {
-        "browsers": ["android >= 4.4", "iOS > 9", "ChromeAndroid >= 56"]
-      },
-      "useBuiltIns": "usage"
-    }],
-    "react"
-  ],
-  "plugins": [["emotion", { "inline": true }], "universal-import"],
   "env": {
-    "development": {
-      "plugins": ["react-hot-loader/babel"]
+    "devClient": {
+      "presets": [
+        ["env", {
+          "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
+          "useBuiltIns": "usage"
+        }],
+        "react"
+      ],
+      "plugins": [["emotion", { "inline": true }], "universal-import", "react-hot-loader/babel"],
+    },
+    "devServer": {
+      "presets": [
+        ["env", {
+          "targets": { "node": "current" }
+        }],
+        "react"
+      ],
+      "plugins": [["emotion", { "inline": true }], "universal-import"],
     }
   }
 }
