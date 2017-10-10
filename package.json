@@ -46,7 +46,7 @@
     "webpack": "^3.5.1",
     "webpack-flush-chunks": "^1.1.23"
   },
-  "devDepencendies": {
+  "devDependencies": {
     "eslint": "^4.8.0",
     "babel-eslint": "^7.2.3",
     "eslint-config-airbnb": "^15.1.0",

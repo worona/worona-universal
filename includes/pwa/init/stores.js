@@ -1,7 +1,8 @@
 import { types, getSnapshot, applySnapshot } from 'mobx-state-tree';
 
 const Stores = types
-  .model('Stores', {
+  .model('Stores')
+  .props({
     color: 'red',
   })
   .views(self => ({
