@@ -45,7 +45,7 @@ const start = async () => {
     console.log(`> Building for ${dev ? 'development' : 'production'}...`);
     await build();
     console.log('> Finished.\n');
-  } else if (argv.server) {
+  } else if (argv.serve) {
     serverProd();
   } else if (dev) {
     startDev();

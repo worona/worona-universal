@@ -21,7 +21,7 @@ module.exports = {
   entry: [path.resolve(__dirname, '../init/server.js')],
   externals,
   output: {
-    path: path.resolve(__dirname, '../../build/pwa/server'),
+    path: path.resolve(__dirname, '../../../build/pwa/server'),
     filename: '[name].js',
     libraryTarget: 'commonjs2',
   },
