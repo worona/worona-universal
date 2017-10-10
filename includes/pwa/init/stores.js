@@ -1,9 +1,23 @@
 import { types, getSnapshot, applySnapshot } from 'mobx-state-tree';
 
+const Router = types
+  .model('Router')
+  .props({
+    id: types.number,
+    type: types.string,
+  })
+  .actions(self => ({
+    push: ({ id, type }) => {
+      self.id = id;
+      self.type = type;
+    }
+  }));
+
 const Stores = types
   .model('Stores')
   .props({
     color: 'red',
+    router: Router,
   })
   .views(self => ({
     get colorAndNumber() {
@@ -16,7 +30,7 @@ const Stores = types
     },
   }));
 
-const stores = Stores.create({});
+const stores = Stores.create({ router: { id: 0, type: 'post' } });
 
 if (typeof window !== 'undefined') window.stores = stores;
 
