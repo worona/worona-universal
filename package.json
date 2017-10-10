@@ -18,10 +18,13 @@
     "babel-loader": "^7.1.2",
     "babel-plugin-emotion": "^7.3.2",
     "babel-plugin-universal-import": "^1.2.6",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-es2015": "^6.24.0",
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-2": "^6.22.0",
     "colors": "^1.1.2",
+    "core-js": "^2.5.1",
     "css-loader": "^0.27.3",
     "emotion": "^7.3.2",
     "emotion-server": "^7.3.2",
@@ -54,8 +57,7 @@
     "worona-deps": "^2.0.3",
     "worona-polyfills": "^1.0.0"
   },
-  "devDependencies": {
-    "babel-eslint": "^7.2.3",
+  "devDepencendies": {
     "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.6.0",
