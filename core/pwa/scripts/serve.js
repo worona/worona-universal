@@ -41,13 +41,13 @@ const createApp = () => {
 const serverProd = () => {
   const { app, done } = createApp();
   // Check if a production build has been generated.
-  const nodeEnv = require('../../../build/pwa/buildInfo.json').nodeEnv;
+  const nodeEnv = require('../../../.build/pwa/buildInfo.json').nodeEnv;
   if (nodeEnv !== 'production') throw new Error("Please, run 'npm run build -- --prod' first.");
 
   // Start server with the clientStats.
-  const clientStats = require('../../../build/pwa/clientStats.json');
-  const serverRender = require('../../../build/pwa/server/main.js').default;
-  app.use('/static', express.static('build/pwa/client/'));
+  const clientStats = require('../../../.build/pwa/clientStats.json');
+  const serverRender = require('../../../.build/pwa/server/main.js').default;
+  app.use('/static', express.static('.build/pwa/client/'));
   app.use(serverRender({ clientStats }));
   done();
 };

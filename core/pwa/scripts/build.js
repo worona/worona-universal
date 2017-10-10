@@ -18,15 +18,15 @@ const webpackPromise = (clientConfig, serverConfig) =>
 
 const clean = () => {
   // Delete current build.
-  rimraf.sync('build/pwa');
+  rimraf.sync('.build/pwa');
 
   // Create info file.
-  mkdirp.sync('build/pwa');
+  mkdirp.sync('.build/pwa');
   const buildInfo = {
     buildPath: path.resolve(__dirname, '../../..'),
     nodeEnv: dev ? 'development' : 'production',
   };
-  fs.writeFileSync('build/pwa/buildInfo.json', JSON.stringify(buildInfo, null, 2));
+  fs.writeFileSync('.build/pwa/buildInfo.json', JSON.stringify(buildInfo, null, 2));
 };
 
 const build = async () => {
@@ -43,7 +43,7 @@ const build = async () => {
   // Run webpack and wait until it finishes. Then save clientStats to a file.
   const stats = await webpackPromise(clientConfig, serverConfig);
   const clientStats = stats.toJson().children[0];
-  fs.writeFileSync('build/pwa/clientStats.json', JSON.stringify(clientStats, null, 2));
+  fs.writeFileSync('.build/pwa/clientStats.json', JSON.stringify(clientStats, null, 2));
 
   // Return webpack stats.
   return stats;

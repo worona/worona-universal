@@ -31,7 +31,7 @@ const startDev = async () => {
   const options = { publicPath, stats: { colors: true } };
 
   // Configure Express server.
-  app.use('/static', express.static(path.resolve(__dirname, '../../../build/pwa/client')));
+  app.use('/static', express.static(path.resolve(__dirname, '../../../.build/pwa/client')));
   app.use(webpackDevMiddleware(compiler, options));
   app.use(webpackHotMiddleware(clientCompiler));
   app.use(webpackHotServerMiddleware(compiler));

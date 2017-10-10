@@ -7,7 +7,7 @@ import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import { extractCritical } from 'emotion-server';
 import { Helmet } from 'react-helmet';
-import { buildPath } from '../../../build/pwa/buildInfo.json';
+import { buildPath } from '../../../.build/pwa/buildInfo.json';
 import stores from './stores';
 import App from './App';
 
@@ -26,7 +26,7 @@ export default ref => (req, res) => {
   const chunksForArray = scriptsWithoutBootstrap.map(sc => `'${sc}'`).join(',');
   const bootstrapFileName = scripts.filter(sc => /bootstrap/.test(sc));
   const bootstrapString = fs.readFileSync(
-    `${buildPath}/build/pwa/client/${bootstrapFileName}`,
+    `${buildPath}/.build/pwa/client/${bootstrapFileName}`,
     'utf8'
   );
 
