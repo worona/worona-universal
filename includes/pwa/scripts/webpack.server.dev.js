@@ -17,7 +17,7 @@ externals['react-dom/server'] = 'commonjs react-dom/server';
 module.exports = {
   name: 'server',
   target: 'node',
-  devtool: 'eval',
+  // devtool: 'eval',
   entry: [path.resolve(__dirname, '../init/server.js')],
   externals,
   output: {
@@ -30,10 +30,15 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            forceEnv: 'devServer'
+          },
+        }
       },
       {
-        test: /\.styl$/,
+        test: /\.css/,
         exclude: /node_modules/,
         use: [
           {
@@ -53,5 +58,8 @@ module.exports = {
       maxChunks: 1,
     }),
     new webpack.WatchIgnorePlugin([/build/]),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+    }),
   ],
 };

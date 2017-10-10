@@ -9,7 +9,7 @@ const publicPath = process.env.PUBLIC_PATH ? `${process.env.PUBLIC_PATH}static/`
 module.exports = {
   name: 'client',
   target: 'web',
-  devtool: 'eval',
+  // devtool: 'eval',
   entry: [
     ...vendors,
     `webpack-hot-middleware/client?path=${process.env.PUBLIC_PATH ||
@@ -27,7 +27,12 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: 'babel-loader',
+        use: {
+          loader: 'babel-loader',
+          options: {
+            forceEnv: 'devClient'
+          },
+        }
       },
       {
         test: /\.css$/,

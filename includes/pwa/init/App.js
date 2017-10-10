@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider, inject } from 'mobx-react';
 import { Helmet } from 'react-helmet';
+import universal from 'react-universal-component'
+
+const DynComponent = universal(() => import(`./dyn-component`));
 
 let Color = ({ color, colorAndNumber, toggleColor }) => [
   <div key={1}>{color}</div>,
@@ -11,7 +14,8 @@ let Color = ({ color, colorAndNumber, toggleColor }) => [
   </button>,
   <Helmet key={4}>
     <title>Worona</title>
-  </Helmet>
+  </Helmet>,
+  <DynComponent key={5} />
 ];
 
 Color = inject(({ stores }) => ({
