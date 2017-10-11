@@ -1,8 +1,9 @@
+/* eslint-disable global-require */
 import { createStore, applyMiddleware, compose } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import worona from 'worona-deps';
-import { clientStarted, clientSagasInitialized } from './build/actions';
+import { clientStarted, clientSagasInitialized } from '../extensions/build/actions';
 
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -18,7 +19,7 @@ const serverMiddleware = [sagaMiddleware];
 
 // Add logger in dev mode.
 if (dev) {
-  const { createLogger } = require('redux-logger'); // eslint-disable-line
+  const { createLogger } = require('redux-logger');
   clientMiddleware.push(createLogger({ diff: true, collapsed: true }));
   serverMiddleware.push(createLogger({ diff: true, collapsed: true }));
 }

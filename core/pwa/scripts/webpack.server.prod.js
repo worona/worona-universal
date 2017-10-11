@@ -29,7 +29,7 @@ module.exports = {
               modules: true,
               localIdentName: '[name]__[local]--[hash:base64:5]',
             },
-          }
+          },
         ],
       },
     ],
@@ -41,6 +41,10 @@ module.exports = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
     }),
-    new webpack.DefinePlugin({ "global.GENTLY": false })
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.RENDER': JSON.stringify('server'),
+      'global.GENTLY': false,
+    }),
   ],
 };

@@ -1,32 +1,36 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Provider, inject } from 'mobx-react';
+import { Provider } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { clientReactRendered } from '../extensions/build/actions';
 
-let Color = ({ color, colorAndNumber, toggleColor }) => [
+const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
   <div key={1}>{color}</div>,
   <div key={2}>{colorAndNumber}</div>,
   <button key={3} onClick={toggleColor}>
-    Toggle
+    Togglee
   </button>,
   <Helmet key={4}>
     <title>Worona</title>
   </Helmet>
 ];
 
-Color = inject(({ stores }) => ({
-  color: stores.color,
-  colorAndNumber: stores.colorAndNumber,
-  toggleColor: stores.toggleColor,
-}))(Color);
-
-const App = ({ stores }) => (
-  <Provider stores={stores}>
-    <Color />
-  </Provider>
-);
+class App extends React.Component {
+  componentDidMount() {
+    this.props.store.dispatch(clientReactRendered());
+  }
+  render() {
+    return (
+      <Provider store={this.props.store}>
+        <Color />
+      </Provider>
+    )
+  }
+}
 App.propTypes = {
-  stores: PropTypes.shape({}).isRequired,
+  store: PropTypes.shape({
+    dispatch: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default App;

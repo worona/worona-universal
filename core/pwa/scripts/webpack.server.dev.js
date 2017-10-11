@@ -56,7 +56,11 @@ module.exports = {
       maxChunks: 1,
     }),
     new webpack.WatchIgnorePlugin([/\.build/]),
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.RENDER': JSON.stringify('server'),
+      'global.GENTLY': false,
+    }),
     new webpack.IgnorePlugin(/vertx/),
-    new webpack.DefinePlugin({ 'global.GENTLY': false }),
   ],
 };

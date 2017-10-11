@@ -8,8 +8,8 @@ const createServer = app => {
     const server = require('https').createServer;
     const readFileSync = require('fs').readFileSync;
     const options = {
-      key: readFileSync('includes/certs/localhost.key'),
-      cert: readFileSync('includes/certs/localhost.crt'),
+      key: readFileSync('core/certs/localhost.key'),
+      cert: readFileSync('core/certs/localhost.crt'),
     };
     return server(options, app);
   }

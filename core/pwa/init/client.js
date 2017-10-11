@@ -1,29 +1,32 @@
-/* eslint-disable import/first, global-require */
+/* eslint-disable import/first, global-require, no-underscore-dangle */
 import './public-path';
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createHistory from 'history/createBrowserHistory';
+import { combineReducers } from 'redux';
 import AppContainer from 'react-hot-loader/lib/AppContainer';
 import stores from './stores';
 import App from './app';
+import initStore from './store';
+import reducers from './reducers';
 
-const history = createHistory();
-
-const render = async (Component, store) => {
+const render = async Component => {
+  const store = initStore({
+    reducer: combineReducers(reducers),
+    initialState: window.__wppwa_initial_state__,
+  });
   ReactDOM.hydrate(
     <AppContainer>
-      <Component history={history} stores={store} />
+      <Component store={store} />
     </AppContainer>,
     document.getElementById('root')
   );
 };
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept(['./app.js', './stores.js'], () => {
-    const st = require('./stores').default;
+  module.hot.accept(['./app.js', './store.js'], () => {
     const Component = require('./app').default;
-    render(Component, st);
+    render(Component);
   });
 }
 

@@ -1,5 +1,6 @@
 /* eslint-disable no-console, global-require, import/no-dynamic-require */
 import 'worona-polyfills';
+import React from 'react';
 import { readFileSync, existsSync } from 'fs';
 import ReactDOM from 'react-dom/server';
 import { flushChunkNames } from 'react-universal-component/server';
@@ -9,37 +10,36 @@ import request from 'superagent';
 import { Helmet } from 'react-helmet';
 import { normalize } from 'normalizr';
 import { addPackage } from 'worona-deps';
+import { combineReducers } from 'redux';
 import { buildPath } from '../../../.build/pwa/buildInfo.json';
 import { settingsSchema } from './schemas';
 import buildModule from '../extensions/build';
 import routerModule from '../extensions/router';
 import settingsModule from '../extensions/settings';
 import serverSagas from './sagas.server';
-import app from './app';
+import initStore from './store';
+import reducers from './reducers';
+import App from './app';
 
 const getFolder = name => {
-  if (existsSync(`${buildPath}/packages/extensions/${name}`))
-    return 'extensions';
-  if (existsSync(`${buildPath}/packages/themes/${name}`))
-    return 'themes';
+  if (existsSync(`${buildPath}/packages/extensions/${name}`)) return 'extensions';
+  if (existsSync(`${buildPath}/packages/themes/${name}`)) return 'themes';
   throw new Error(`Unable to find package '${name}'.`);
 };
 
-const requireModules = activatedPackages => {
-  return activatedPackages.map(name => {
+const requireModules = pkgs =>
+  pkgs.map(name => {
     const folder = getFolder(name);
     const module = require(`../../../packages/${folder}/${name}/src/pwa`);
     const sagas = require(`../../../packages/${folder}/${name}/src/pwa/sagas/server`);
     return { name, module, sagas };
-  })
-};
+  });
 
 addPackage({ namespace: 'build', module: buildModule });
 addPackage({ namespace: 'router', module: routerModule });
 addPackage({ namespace: 'settings', module: settingsModule });
 
 export default ref => async (req, res) => {
-
   // Retrieve and normalize site settings.
   const cdn = process.env.SERVER_TYPE === 'prod' ? 'cdn' : 'precdn';
   const { body } = await request(
@@ -53,15 +53,24 @@ export default ref => async (req, res) => {
     .reduce((obj, pkg) => ({ ...obj, [pkg.woronaInfo.namespace]: pkg.woronaInfo.name }), {});
 
   // Wait until all the modules have been loaded, then add the reducers to the system.
-  const packageModules = requireModules(Object.values(activatedPackages));
+  // const packageModules = requireModules(Object.values(activatedPackages));
   // Object.entries(packageModules).map(([name, module]) => {
   //   if (module.reducers) reducers[packages[name].namespace] = module.reducers;
   //   addPackage({ namespace: packages[name].namespace, module });
   // });
 
-  debugger;
+  const store = initStore({ reducer: combineReducers(reducers) });
 
-  const html = ReactDOM.renderToString(app);
+  // Add settings to the state.
+  store.dispatch(buildModule.actions.serverStarted());
+  store.dispatch(settingsModule.actions.siteIdUpdated({ siteId: req.query.siteId }));
+  store.dispatch(
+    routerModule.actions.routeChangeSucceed({ query: req.query, pathname: {}, asPath: '/' })
+  );
+  store.dispatch(buildModule.actions.activatedPackagesUpdated({ packages: activatedPackages }));
+  store.dispatch(settingsModule.actions.settingsUpdated({ settings }));
+
+  const html = ReactDOM.renderToString(<App store={store} />);
   const chunkNames = flushChunkNames();
 
   const { styles, cssHash, scripts, stylesheets } = flushChunks(ref.clientStats, { chunkNames });
@@ -107,7 +116,7 @@ export default ref => async (req, res) => {
           <div id="root">${html}</div>
           ${cssHash}
           <script>
-            var __wppwa_settings__ = '${JSON.stringify(settings)}';
+            window.__wppwa_initial_state__ = ${JSON.stringify(store.getState())};
             var publicPath = '/';
             if (${!!process.env.PUBLIC_PATH}) {
               publicPath = '${process.env.PUBLIC_PATH}';

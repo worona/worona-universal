@@ -58,14 +58,16 @@
     "worona-polyfills": "^1.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.8.0",
     "babel-eslint": "^7.2.3",
+    "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.6.0",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.4.0",
     "prettier": "^1.7.4",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^3.0.6",
     "webpack-dev-middleware": "^1.11.0",
     "webpack-hot-middleware": "^2.17.1",
     "webpack-hot-server-middleware": "^0.1.0",
