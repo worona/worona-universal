@@ -1,3 +1,1 @@
-export default function* routerServerSagas() {
-  
-};
+export default function* routerServerSagas() {};

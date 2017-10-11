@@ -1,5 +1,5 @@
-import router from './router/sagas/client';
-import settings from './settings/sagas/client';
+import router from '../extensions/router/sagas/client';
+import settings from '../extensions/settings/sagas/client';
 
 export default {
   router,

@@ -70,6 +70,13 @@ export default ref => async (req, res) => {
   store.dispatch(buildModule.actions.activatedPackagesUpdated({ packages: activatedPackages }));
   store.dispatch(settingsModule.actions.settingsUpdated({ settings }));
 
+  // Run and wait until all the server sagas have run.
+  const startSagas = new Date();
+  const sagaPromises = Object.values(serverSagas).map(saga => store.runSaga(saga, req).done);
+  store.dispatch(buildModule.actions.serverSagasInitialized());
+  await Promise.all(sagaPromises);
+  store.dispatch(buildModule.actions.serverFinished({ timeToRunSagas: new Date() - startSagas }));
+
   const html = ReactDOM.renderToString(<App store={store} />);
   const chunkNames = flushChunkNames();
 

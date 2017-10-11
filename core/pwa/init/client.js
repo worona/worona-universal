@@ -9,11 +9,13 @@ import stores from './stores';
 import App from './app';
 import initStore from './store';
 import reducers from './reducers';
+import clientSagas from './sagas.client';
 
 const render = async Component => {
   const store = initStore({
     reducer: combineReducers(reducers),
     initialState: window.__wppwa_initial_state__,
+    sagas: clientSagas,
   });
   ReactDOM.hydrate(
     <AppContainer>
