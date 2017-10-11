@@ -1,31 +1,79 @@
-/* eslint-disable no-console, global-require */
-import React from 'react';
+/* eslint-disable no-console, global-require, import/no-dynamic-require */
+import 'worona-polyfills';
+import { readFileSync, existsSync } from 'fs';
 import ReactDOM from 'react-dom/server';
-import fs from 'fs';
-import createHistory from 'history/createMemoryHistory';
 import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
 import { extractCritical } from 'emotion-server';
+import request from 'superagent';
 import { Helmet } from 'react-helmet';
+import { normalize } from 'normalizr';
+import { addPackage } from 'worona-deps';
 import { buildPath } from '../../../.build/pwa/buildInfo.json';
-import stores from './stores';
-import App from './App';
+import { settingsSchema } from './schemas';
+import buildModule from '../extensions/build';
+import routerModule from '../extensions/router';
+import settingsModule from '../extensions/settings';
+import serverSagas from './sagas.server';
+import app from './app';
 
-export default ref => (req, res) => {
-  const history = createHistory({ initialEntries: [req.path] });
-  const app = ReactDOM.renderToString(<App history={history} stores={stores} />);
+const getFolder = name => {
+  if (existsSync(`${buildPath}/packages/extensions/${name}`))
+    return 'extensions';
+  if (existsSync(`${buildPath}/packages/themes/${name}`))
+    return 'themes';
+  throw new Error(`Unable to find package '${name}'.`);
+};
+
+const requireModules = activatedPackages => {
+  return activatedPackages.map(name => {
+    const folder = getFolder(name);
+    const module = require(`../../../packages/${folder}/${name}/src/pwa`);
+    const sagas = require(`../../../packages/${folder}/${name}/src/pwa/sagas/server`);
+    return { name, module, sagas };
+  })
+};
+
+addPackage({ namespace: 'build', module: buildModule });
+addPackage({ namespace: 'router', module: routerModule });
+addPackage({ namespace: 'settings', module: settingsModule });
+
+export default ref => async (req, res) => {
+
+  // Retrieve and normalize site settings.
+  const cdn = process.env.SERVER_TYPE === 'prod' ? 'cdn' : 'precdn';
+  const { body } = await request(
+    `https://${cdn}.worona.io/api/v1/settings/site/${req.query.siteId}/app/prod/live`
+  );
+  const { entities: { settings } } = normalize(body, settingsSchema);
+
+  // Extract activated packages array from settings.
+  const activatedPackages = Object.values(settings)
+    .filter(pkg => pkg.woronaInfo.namespace !== 'generalSite')
+    .reduce((obj, pkg) => ({ ...obj, [pkg.woronaInfo.namespace]: pkg.woronaInfo.name }), {});
+
+  // Wait until all the modules have been loaded, then add the reducers to the system.
+  const packageModules = requireModules(Object.values(activatedPackages));
+  // Object.entries(packageModules).map(([name, module]) => {
+  //   if (module.reducers) reducers[packages[name].namespace] = module.reducers;
+  //   addPackage({ namespace: packages[name].namespace, module });
+  // });
+
+  debugger;
+
+  const html = ReactDOM.renderToString(app);
   const chunkNames = flushChunkNames();
 
   const { styles, cssHash, scripts, stylesheets } = flushChunks(ref.clientStats, { chunkNames });
 
-  const { css } = extractCritical(app);
+  const { css } = extractCritical(html);
   const helmet = Helmet.renderStatic();
 
   const scriptsWithoutBootstrap = scripts.filter(sc => !/bootstrap/.test(sc));
 
   const chunksForArray = scriptsWithoutBootstrap.map(sc => `'${sc}'`).join(',');
   const bootstrapFileName = scripts.filter(sc => /bootstrap/.test(sc));
-  const bootstrapString = fs.readFileSync(
+  const bootstrapString = readFileSync(
     `${buildPath}/.build/pwa/client/${bootstrapFileName}`,
     'utf8'
   );
@@ -56,9 +104,10 @@ export default ref => (req, res) => {
           <style>${css}</style>
         </head>
         <body ${helmet.bodyAttributes.toString()}>
-          <div id="root">${app}</div>
+          <div id="root">${html}</div>
           ${cssHash}
           <script>
+            var __wppwa_settings__ = '${JSON.stringify(settings)}';
             var publicPath = '/';
             if (${!!process.env.PUBLIC_PATH}) {
               publicPath = '${process.env.PUBLIC_PATH}';

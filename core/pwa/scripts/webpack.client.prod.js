@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const vendors = require('./vendors');
+const { getNodeModules } = require('./utils');
 
 const publicPath = process.env.PUBLIC_PATH ? `${process.env.PUBLIC_PATH}static/` : '/static/';
 
@@ -37,6 +38,9 @@ module.exports = {
         }),
       },
     ],
+  },
+  resolve: {
+    modules: ['node_modules', ...getNodeModules('extensions'), ...getNodeModules('themes')],
   },
   plugins: [
     new ExtractCssChunks(),

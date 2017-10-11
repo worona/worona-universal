@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const { getNodeModules } = require('./utils');
 
 module.exports = {
   name: 'server',
@@ -33,9 +34,13 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    modules: ['node_modules', ...getNodeModules('extensions'), ...getNodeModules('themes')],
+  },
   plugins: [
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
     }),
+    new webpack.DefinePlugin({ "global.GENTLY": false })
   ],
 };

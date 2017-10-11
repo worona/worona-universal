@@ -41,10 +41,10 @@ This sets Webpack's `publicPath` to a custom url:
 
 `npm start:pwa -- --publicPath https://ngrok.io/xxx`
 
-### Stagging/Live
+### Preproduction/Production
 
-Default `SERVER_TYPE` is `stagging`.
+Default `SERVER_TYPE` is `pre`.
 
-This sets `SERVER_TYPE` to `live`:
+This sets `SERVER_TYPE` to `prod`:
 
 `npm start:pwa -- --live` or `npm start:pwa -- -l`

@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const WriteFilePlugin = require('write-file-webpack-plugin'); // here so you can see what chunks are built
 const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const vendors = require('./vendors');
+const { getNodeModules } = require('./utils');
 
 const publicPath = process.env.PUBLIC_PATH ? `${process.env.PUBLIC_PATH}static/` : '/static/';
 
@@ -45,6 +46,9 @@ module.exports = {
       },
     ],
   },
+  resolve: {
+    modules: ['node_modules', ...getNodeModules('extensions'), ...getNodeModules('themes')],
+  },
   plugins: [
     new WriteFilePlugin(),
     new ExtractCssChunks(),
@@ -55,6 +59,7 @@ module.exports = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.IgnorePlugin(/vertx/),
     new webpack.WatchIgnorePlugin([/\.build/]),
     new webpack.DefinePlugin({
       'process.env.PUBLIC_PATH': JSON.stringify(publicPath),

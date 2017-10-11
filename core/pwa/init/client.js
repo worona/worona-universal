@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import createHistory from 'history/createBrowserHistory';
 import AppContainer from 'react-hot-loader/lib/AppContainer';
 import stores from './stores';
-import App from './App';
+import App from './app';
 
 const history = createHistory();
 
@@ -20,9 +20,9 @@ const render = async (Component, store) => {
 };
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept(['./App.js', './stores.js'], () => {
+  module.hot.accept(['./app.js', './stores.js'], () => {
     const st = require('./stores').default;
-    const Component = require('./App').default;
+    const Component = require('./app').default;
     render(Component, st);
   });
 }
