@@ -63,6 +63,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.PUBLIC_PATH': JSON.stringify(publicPath),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+      'process.env.RENDER': JSON.stringify('client'),
     }),
   ],
 };
