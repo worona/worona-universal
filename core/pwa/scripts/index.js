@@ -28,7 +28,7 @@ if (!argv.server) {
 
 console.log();
 
-const args = ['includes/pwa/scripts/start.js'];
+const args = ['core/pwa/scripts/start.js'];
 
 if (argv.build) args.push('--build');
 else if (argv.serve) args.push('--serve');
