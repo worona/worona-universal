@@ -3,7 +3,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import createSagaMiddleware from 'redux-saga';
 import worona from 'worona-deps';
-import { clientStarted, clientSagasInitialized } from '../extensions/build/actions';
+import { clientStarted, clientSagasInitialized } from '../packages/build/actions';
 
 const dev = process.env.NODE_ENV !== 'production';
 

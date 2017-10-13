@@ -35,7 +35,7 @@ module.exports = {
     ],
   },
   resolve: {
-    modules: ['node_modules', ...getNodeModules('extensions'), ...getNodeModules('themes')],
+    modules: ['node_modules', ...getNodeModules()],
   },
   plugins: [
     new webpack.optimize.LimitChunkCountPlugin({

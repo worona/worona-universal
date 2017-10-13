@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { clientReactRendered } from '../extensions/build/actions';
+import { clientReactRendered } from '../packages/build/actions';
 
 const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
   <div key={1}>{color}</div>,

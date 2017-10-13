@@ -14,25 +14,18 @@ import { combineReducers } from 'redux';
 import htmlescape from 'htmlescape';
 import { buildPath } from '../../../.build/pwa/buildInfo.json';
 import { settingsSchema } from './schemas';
-import buildModule from '../extensions/build';
-import routerModule from '../extensions/router';
-import settingsModule from '../extensions/settings';
+import buildModule from '../packages/build';
+import routerModule from '../packages/router';
+import settingsModule from '../packages/settings';
 import serverSagas from './sagas.server';
 import initStore from './store';
 import reducers from './reducers';
 import App from './app';
 
-const getFolder = name => {
-  if (existsSync(`${buildPath}/packages/extensions/${name}`)) return 'extensions';
-  if (existsSync(`${buildPath}/packages/themes/${name}`)) return 'themes';
-  throw new Error(`Unable to find package '${name}'.`);
-};
-
 const requireModules = pkgs =>
   pkgs.map(([namespace, name]) => {
-    const folder = getFolder(name);
-    const module = require(`../../../packages/${folder}/${name}/src/pwa`).default;
-    const serverSaga = require(`../../../packages/${folder}/${name}/src/pwa/sagas/server`).default;
+    const module = require(`../../../packages/${name}/src/pwa`).default;
+    const serverSaga = require(`../../../packages/${name}/src/pwa/sagas/server`).default;
     return { name, namespace, module, serverSaga };
   });
 

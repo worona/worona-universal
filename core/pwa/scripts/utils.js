@@ -1,10 +1,10 @@
 const { readdirSync } = require('fs');
 const path = require('path');
 
-const getNodeModules = type =>
-  readdirSync(path.resolve(__dirname, `../../../packages/${type}`))
+const getNodeModules = () =>
+  readdirSync(path.resolve(__dirname, `../../../packages/`))
     .filter(name => name !== '.gitignore')
-    .map(name => path.resolve(__dirname, `../../../packages/${type}/${name}/node_modules`));
+    .map(name => path.resolve(__dirname, `../../../packages/${name}/node_modules`));
 
 module.exports = {
   getNodeModules,
