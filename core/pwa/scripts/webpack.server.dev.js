@@ -62,5 +62,6 @@ module.exports = {
       'global.GENTLY': false,
     }),
     new webpack.IgnorePlugin(/vertx/),
+    new webpack.NormalModuleReplacementPlugin(/^any-promise$/, 'promise-monofill'),
   ],
 };

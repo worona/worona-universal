@@ -1,7 +1,7 @@
 /* eslint-disable no-console, global-require, import/no-dynamic-require */
 import 'worona-polyfills';
 import React from 'react';
-import { readFileSync, existsSync } from 'fs';
+import { readFile } from 'mz/fs';
 import ReactDOM from 'react-dom/server';
 import { flushChunkNames } from 'react-universal-component/server';
 import flushChunks from 'webpack-flush-chunks';
@@ -84,7 +84,7 @@ export default ref => async (req, res) => {
 
   const chunksForArray = scriptsWithoutBootstrap.map(sc => `'${sc}'`).join(',');
   const bootstrapFileName = scripts.filter(sc => /bootstrap/.test(sc));
-  const bootstrapString = readFileSync(
+  const bootstrapString = await readFile(
     `${buildPath}/.build/pwa/client/${bootstrapFileName}`,
     'utf8'
   );
@@ -118,6 +118,7 @@ export default ref => async (req, res) => {
           <div id="root">${html}</div>
           ${cssHash}
           <script>
+            window.__wppwa_activated_packages__ = ${JSON.stringify(activatedPackages)};
             window.__wppwa_initial_state__ = ${htmlescape(store.getState())};
             var publicPath = '/';
             if (${!!process.env.PUBLIC_PATH}) {

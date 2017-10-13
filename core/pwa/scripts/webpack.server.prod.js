@@ -46,5 +46,6 @@ module.exports = {
       'process.env.RENDER': JSON.stringify('server'),
       'global.GENTLY': false,
     }),
+    new webpack.NormalModuleReplacementPlugin(/^any-promise$/, 'promise-monofill'),
   ],
 };
