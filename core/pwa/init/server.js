@@ -29,11 +29,11 @@ const getFolder = name => {
 };
 
 const requireModules = pkgs =>
-  pkgs.map(name => {
+  pkgs.map(([namespace, name]) => {
     const folder = getFolder(name);
-    const module = require(`../../../packages/${folder}/${name}/src/pwa`);
-    const sagas = require(`../../../packages/${folder}/${name}/src/pwa/sagas/server`);
-    return { name, module, sagas };
+    const module = require(`../../../packages/${folder}/${name}/src/pwa`).default;
+    const serverSaga = require(`../../../packages/${folder}/${name}/src/pwa/sagas/server`).default;
+    return { name, namespace, module, serverSaga };
   });
 
 addPackage({ namespace: 'build', module: buildModule });
@@ -53,12 +53,13 @@ export default ref => async (req, res) => {
     .filter(pkg => pkg.woronaInfo.namespace !== 'generalSite')
     .reduce((obj, pkg) => ({ ...obj, [pkg.woronaInfo.namespace]: pkg.woronaInfo.name }), {});
 
-  // Wait until all the modules have been loaded, then add the reducers to the system.
-  // const packageModules = requireModules(Object.values(activatedPackages));
-  // Object.entries(packageModules).map(([name, module]) => {
-  //   if (module.reducers) reducers[packages[name].namespace] = module.reducers;
-  //   addPackage({ namespace: packages[name].namespace, module });
-  // });
+  // Load the modules, then add the reducers to the system.
+  const packageModules = requireModules(Object.entries(activatedPackages));
+  packageModules.forEach(pkg => {
+    if (pkg.module.reducers) reducers[pkg.namespace] = pkg.module.reducers;
+    if (pkg.serverSaga) serverSagas[pkg.name] = pkg.serverSaga;
+    addPackage({ namespace: pkg.namespace, module: pkg.module });
+  });
 
   const store = initStore({ reducer: combineReducers(reducers) });
 
