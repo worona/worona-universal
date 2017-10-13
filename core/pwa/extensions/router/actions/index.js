@@ -1,17 +1,13 @@
 import * as types from '../types';
 
-export const routeChangeRequested = ({ asPath }) => ({
+export const routeChangeRequested = ({ entityType, entityId }) => ({
   type: types.ROUTE_CHANGE_REQUESTED,
-  asPath,
+  entityType,
+  entityId,
 });
-export const routeChangeSucceed = ({ asPath, query, pathname }) => ({
-  type: types.ROUTE_CHANGE_SUCCEED,
-  asPath,
-  query,
+export const routeChanged = ({ pathname, entityType, entityId }) => ({
+  type: types.ROUTE_CHANGED,
   pathname,
-});
-export const routeChangeFailed = ({ asPath, error }) => ({
-  type: types.ROUTE_CHANGE_FAILED,
-  asPath,
-  error,
+  entityType,
+  entityId,
 });
