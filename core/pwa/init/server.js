@@ -11,6 +11,7 @@ import { Helmet } from 'react-helmet';
 import { normalize } from 'normalizr';
 import { addPackage } from 'worona-deps';
 import { combineReducers } from 'redux';
+import htmlescape from 'htmlescape';
 import { buildPath } from '../../../.build/pwa/buildInfo.json';
 import { settingsSchema } from './schemas';
 import buildModule from '../extensions/build';
@@ -123,7 +124,7 @@ export default ref => async (req, res) => {
           <div id="root">${html}</div>
           ${cssHash}
           <script>
-            window.__wppwa_initial_state__ = ${JSON.stringify(store.getState())};
+            window.__wppwa_initial_state__ = ${htmlescape(store.getState())};
             var publicPath = '/';
             if (${!!process.env.PUBLIC_PATH}) {
               publicPath = '${process.env.PUBLIC_PATH}';

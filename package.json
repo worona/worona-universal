@@ -30,6 +30,7 @@
     "express-no-favicons": "^0.0.1",
     "extract-css-chunks-webpack-plugin": "^2.0.17",
     "history": "^4.6.3",
+    "htmlescape": "^1.1.1",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "mobx": "^3.3.0",
