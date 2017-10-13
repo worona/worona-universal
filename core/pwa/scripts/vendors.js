@@ -8,6 +8,7 @@ module.exports = [
   'mobx-state-tree',
   'mobx-react',
   'worona-deps',
+  'superagent',
   'styled-components',
   'redux',
   'redux-saga',
