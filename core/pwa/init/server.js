@@ -65,7 +65,7 @@ export default ref => async (req, res) => {
   store.dispatch(buildModule.actions.serverStarted());
   store.dispatch(settingsModule.actions.siteIdUpdated({ siteId: req.query.siteId }));
   store.dispatch(
-    routerModule.actions.routeChangeSucceed({ query: req.query, pathname: {}, asPath: '/' })
+    routerModule.actions.routeChangeRequested({ pathname: '/', type: 'home', id: 0 })
   );
   store.dispatch(buildModule.actions.activatedPackagesUpdated({ packages: activatedPackages }));
   store.dispatch(settingsModule.actions.settingsUpdated({ settings }));
