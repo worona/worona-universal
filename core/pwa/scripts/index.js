@@ -2,28 +2,26 @@
 const argv = require('minimist')(process.argv.slice(2));
 const { spawn } = require('child_process');
 
-if (argv.server && !argv.p && !argv.prod)
+if (argv.serve && !argv.p && !argv.prod)
   throw new Error(
-    "'Server only' mode can't be started in development mode. Please use 'npm start' or 'npm run server -- -p'."
+    "'Serve only' mode can't be started in development mode. Please use 'npm start' or 'npm run build -- -p && npm run serve -- -p'."
   );
 
 process.env.NODE_ENV = argv.p || argv.prod ? 'production' : 'development';
-console.log('> Using NODE_ENV=' + process.env.NODE_ENV);
+console.log(`> Using NODE_ENV=${process.env.NODE_ENV}`);
 
 if (!argv.build && !!(argv.s || argv.https)) {
   process.env.HTTPS_SERVER = true;
-  console.log('> Using HTTPS_SERVER=' + process.env.HTTPS_SERVER);
+  console.log(`> Using HTTPS_SERVER=${process.env.HTTPS_SERVER}`);
 }
 
-const protocol = argv.s || argv.https ? 'https://' : 'http://';
-if (!argv.server) {
-  if (argv.publicPath) process.env.PUBLIC_PATH = `${argv.publicPath.replace(/\/$/g, '')}/`;
-  else if (argv.w || argv.wp) {
-    process.env.PUBLIC_PATH = `${protocol}localhost:3000/`;
-  }
-  if (process.env.PUBLIC_PATH)
-    console.log('> Using hardcoded PUBLIC_PATH=' + process.env.PUBLIC_PATH);
-  else console.log('> Using dynamic PUBLIC_PATH');
+if (argv.hmr) {
+  process.env.HMR_PATH = `${argv.hmr.replace(/\/$/g, '')}/`;
+  console.log(`> Using HMR_PATH=${process.env.HMR_PATH}`);
+} else if (argv.w || argv.wp) {
+  const protocol = argv.s || argv.https ? 'https://' : 'http://';
+  process.env.HMR_PATH = `${protocol}localhost:3000/`;
+  console.log(`> Using HMR_PATH=${protocol}localhost:3000/`);
 }
 
 console.log();

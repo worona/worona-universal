@@ -5,15 +5,13 @@ const ExtractCssChunks = require('extract-css-chunks-webpack-plugin');
 const vendors = require('./vendors');
 const { getNodeModules } = require('./utils');
 
-const publicPath = process.env.PUBLIC_PATH ? `${process.env.PUBLIC_PATH}static/` : '/static/';
-
 module.exports = {
   name: 'client',
   target: 'web',
-  devtool: 'eval',
+  // devtool: 'eval',
   entry: [
     ...vendors,
-    `webpack-hot-middleware/client?path=${process.env.PUBLIC_PATH ||
+    `webpack-hot-middleware/client?path=${process.env.HMR_PATH ||
       '/'}__webpack_hmr&timeout=20000&reload=false&quiet=false&noInfo=false`,
     'react-hot-loader/patch',
     path.resolve(__dirname, '../init/client.js'),
@@ -62,7 +60,6 @@ module.exports = {
     new webpack.IgnorePlugin(/vertx/),
     new webpack.WatchIgnorePlugin([/\.build/]),
     new webpack.DefinePlugin({
-      'process.env.PUBLIC_PATH': JSON.stringify(publicPath),
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       'process.env.RENDER': JSON.stringify('client'),
     }),
