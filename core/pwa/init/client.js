@@ -20,10 +20,10 @@ addPackage({ namespace: 'router', module: routerModule });
 addPackage({ namespace: 'settings', module: settingsModule });
 
 const render = async Component => {
-  const activatedPackages = window.__wppwa_activated_packages__;
+  const activatedPackages = window.__wp_pwa__.activatedPackages;
   const store = initStore({
     reducer: combineReducers(reducers),
-    initialState: window.__wppwa_initial_state__,
+    initialState: window.__wp_pwa__.initialState,
     sagas: clientSagas,
   });
   ReactDOM.hydrate(
@@ -35,8 +35,8 @@ const render = async Component => {
 };
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
-  module.hot.accept(['./app.js', './store.js'], () => {
-    const Component = require('./app').default;
+  module.hot.accept(['./components/App.js'], () => {
+    const Component = require('./components/App.js').default;
     render(Component);
   });
 }
