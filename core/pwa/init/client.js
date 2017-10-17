@@ -6,7 +6,6 @@ import ReactDOM from 'react-dom';
 import { combineReducers } from 'redux';
 import AppContainer from 'react-hot-loader/lib/AppContainer';
 import { addPackage } from 'worona-deps';
-import stores from './stores';
 import App from './components/App';
 import initStore from './store';
 import reducers from './reducers';
@@ -41,4 +40,4 @@ if (process.env.NODE_ENV === 'development' && module.hot) {
   });
 }
 
-render(App, stores);
+render(App);
