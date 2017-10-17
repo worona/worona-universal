@@ -22,7 +22,6 @@
     "babel-preset-react": "^6.23.0",
     "babel-preset-stage-2": "^6.22.0",
     "colors": "^1.1.2",
-    "cors": "^2.8.4",
     "css-loader": "^0.27.3",
     "emotion": "^7.3.2",
     "emotion-server": "^7.3.2",

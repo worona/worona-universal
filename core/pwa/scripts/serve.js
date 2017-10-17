@@ -1,6 +1,5 @@
 /* eslint-disable global-require, no-console, import/no-unresolved */
 const express = require('express');
-const cors = require('cors');
 const noFavicon = require('express-no-favicons');
 
 const createServer = app => {
