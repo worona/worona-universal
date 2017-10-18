@@ -5,8 +5,8 @@ export const routeChangeRequested = ({ currentType, currentId }) => ({
   currentType,
   currentId,
 });
-export const routeChanged = ({ pathname, currentType, currentId }) => ({
-  type: types.ROUTE_CHANGED,
+export const routeChangeSucceed = ({ pathname, currentType, currentId }) => ({
+  type: types.ROUTE_CHANGE_SUCCEED,
   pathname,
   currentType,
   currentId,
