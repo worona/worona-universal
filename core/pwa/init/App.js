@@ -3,13 +3,25 @@ import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { clientReactRendered } from '../extensions/build/actions';
+import Swipe from '../extensions/Swipe';
 
-const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
-  <div key={1}>
-    {Array(50)
+const Slide = ({ key, length }) => (
+  <div key={key}>
+    {Array(length)
       .fill(0)
       .map((e, num) => <p>{num}</p>)}
-  </div>,
+  </div>
+);
+
+const Slider = ({ slides }) => (
+  <Swipe index={0}>
+    {Array(slides)
+      .fill(0)
+      .map((e, num) => <Slide key={num} length={num}/>)}
+  </Swipe>
+)
+
+const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
   <div key={2}>{colorAndNumber}</div>,
   <button key={3} onClick={toggleColor}>
     Togglee
@@ -26,7 +38,7 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={this.props.store}>
-        <Color />
+        <Slider slides={5} />
       </Provider>
     );
   }
