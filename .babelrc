@@ -6,7 +6,8 @@
           "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
           "useBuiltIns": "usage"
         }],
-        "react"
+        "react",
+        "stage-2"
       ],
       "plugins": [["emotion", { "inline": true }], "universal-import", "react-hot-loader/babel"],
     },
@@ -15,7 +16,8 @@
         ["env", {
           "targets": { "node": "current" }
         }],
-        "react"
+        "react",
+        "stage-2"
       ],
       "plugins": [["emotion", { "inline": true }], "universal-import"],
     }
