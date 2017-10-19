@@ -11,7 +11,18 @@
       ],
       "plugins": [["emotion", { "inline": true }], "universal-import", "react-hot-loader/babel"],
     },
-    "devServer": {
+    "prodClient": {
+      "presets": [
+        ["env", {
+          "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
+          "useBuiltIns": "usage"
+        }],
+        "react",
+        "stage-2"
+      ],
+      "plugins": [["emotion", { "inline": true }], "universal-import"],
+    },
+    "server": {
       "presets": [
         ["env", {
           "targets": { "node": "current" }

@@ -20,7 +20,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            forceEnv: 'prodServer'
+            forceEnv: 'server'
           },
         }
       },
@@ -48,13 +48,9 @@ module.exports = {
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-<<<<<<< add-packages:core/pwa/scripts/webpack.server.prod.js
       'process.env.RENDER': JSON.stringify('server'),
       'global.GENTLY': false,
     }),
     new webpack.NormalModuleReplacementPlugin(/^any-promise$/, 'promise-monofill'),
-=======
-    }),
->>>>>>> More change to babel-env, but not working yet:includes/pwa/scripts/webpack.server.prod.js
   ],
 };

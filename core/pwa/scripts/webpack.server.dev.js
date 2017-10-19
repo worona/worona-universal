@@ -33,7 +33,7 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            forceEnv: 'devServer'
+            forceEnv: 'server'
           },
         }
       },
@@ -60,7 +60,6 @@ module.exports = {
     new webpack.optimize.LimitChunkCountPlugin({
       maxChunks: 1,
     }),
-<<<<<<< add-packages:core/pwa/scripts/webpack.server.dev.js
     new webpack.WatchIgnorePlugin([/\.build/]),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
@@ -69,11 +68,5 @@ module.exports = {
     }),
     new webpack.IgnorePlugin(/vertx/),
     new webpack.NormalModuleReplacementPlugin(/^any-promise$/, 'promise-monofill'),
-=======
-    new webpack.WatchIgnorePlugin([/build/]),
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-    }),
->>>>>>> More change to babel-env, but not working yet:includes/pwa/scripts/webpack.server.dev.js
   ],
 };
