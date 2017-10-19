@@ -1,46 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { Helmet } from 'react-helmet';
-import { clientReactRendered } from '../packages/build/actions';
-// import UniversalComponent from './universal';
 import universal from 'react-universal-component';
+import { clientReactRendered } from '../packages/build/actions';
 
-const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
-  <div key={1}>{color}</div>,
-  <div key={2}>{colorAndNumber}</div>,
-  <button key={3} onClick={toggleColor}>
-    Toggle
-  </button>,
-  <Helmet key={4}>
-    <title>Worona</title>
-  </Helmet>,
-  <UniversalComponent key={5} name="saturn-app-theme-worona" />,
-  <UniversalComponent key={6} name="wp-org-connection-app-extension-worona" />
-];
-
-const UniversalComponent = universal(props => import(`../../../packages/${props.name}/src/pwa`), {
+const PackageComponent = universal(props => import(`../../../packages/${props.name}/src/pwa`), {
   onLoad: (module, { isSync, isServer }, props, context) => {
-    console.log('loaded!!!');
-  }
+    console.log(`Loaded: ${props.name}`);
+  },
 });
 
 class App extends React.Component {
-  componentDidMount() {
+  componentWillMount() {
     this.props.store.dispatch(clientReactRendered());
+    console.log('App loaded.');
   }
   render() {
     return (
       <Provider store={this.props.store}>
-        <UniversalComponent name="saturn-app-theme-worona" />
+        <div>
+          {this.props.packages.map(pkg => <PackageComponent key={pkg} name={pkg} />)}
+        </div>
       </Provider>
-    )
+    );
   }
 }
 App.propTypes = {
   store: PropTypes.shape({
     dispatch: PropTypes.func.isRequired,
   }).isRequired,
+  packages: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default App;

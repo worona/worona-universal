@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import { combineReducers } from 'redux';
 import AppContainer from 'react-hot-loader/lib/AppContainer';
 import { addPackage } from 'worona-deps';
-import App from './components/App';
+import App from './App';
 import initStore from './store';
 import reducers from './reducers';
 import clientSagas from './sagas.client';
@@ -18,8 +18,17 @@ addPackage({ namespace: 'build', module: buildModule });
 addPackage({ namespace: 'router', module: routerModule });
 addPackage({ namespace: 'settings', module: settingsModule });
 
+const importPromises = name => new Promise((resolve, reject) => {
+  const universalModule = import(`../../../packages/${name}/src/pwa`);
+  universalModule.then(resolve).catch(reject);
+});
+
 const render = async Component => {
   const activatedPackages = window.__wp_pwa__.activatedPackages;
+  const pkgNames = Object.values(activatedPackages);
+  const pkgPromises = pkgNames.map(name => importPromises(name));
+  const pkgModules = await Promise.all(pkgPromises);
+  debugger;
   const store = initStore({
     reducer: combineReducers(reducers),
     initialState: window.__wp_pwa__.initialState,
@@ -27,7 +36,7 @@ const render = async Component => {
   });
   ReactDOM.hydrate(
     <AppContainer>
-      <Component store={store} />
+      <Component store={store} packages={pkgNames} />
     </AppContainer>,
     document.getElementById('root')
   );

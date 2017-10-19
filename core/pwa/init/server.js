@@ -21,7 +21,7 @@ import settingsModule from '../packages/settings';
 import serverSagas from './sagas.server';
 import initStore from './store';
 import reducers from './reducers';
-import App from './components/App';
+import App from './App';
 
 const requireModules = pkgs =>
   pkgs.map(([namespace, name]) => {
@@ -39,7 +39,7 @@ export default ref => async (req, res) => {
   try {
     const cdn = process.env.SERVER_TYPE === 'prod' ? 'cdn' : 'precdn';
     const { body } = await request(
-      `https://${cdn}.worona.io/api/v1/settings/site/${req.query.siteId}/app/prod/live`
+      `https://${cdn}.worona.io/api/v1/settings/site/${req.query.siteId}/app/prod/live`,
     );
     const { entities: { settings } } = normalize(body, settingsSchema);
     // Extract activated packages array from settings.
@@ -61,7 +61,7 @@ export default ref => async (req, res) => {
     store.dispatch(buildModule.actions.serverStarted());
     store.dispatch(settingsModule.actions.siteIdUpdated({ siteId: req.query.siteId }));
     store.dispatch(
-      routerModule.actions.routeChangeSucceed({ query: req.query, pathname: {}, asPath: '/' })
+      routerModule.actions.routeChangeSucceed({ query: req.query, pathname: {}, asPath: '/' }),
     );
     store.dispatch(buildModule.actions.activatedPackagesUpdated({ packages: activatedPackages }));
     store.dispatch(settingsModule.actions.settingsUpdated({ settings }));
@@ -73,7 +73,9 @@ export default ref => async (req, res) => {
     await Promise.all(sagaPromises);
     store.dispatch(buildModule.actions.serverFinished({ timeToRunSagas: new Date() - startSagas }));
 
-    const html = ReactDOM.renderToString(<App store={store} />);
+    const html = ReactDOM.renderToString(
+      <App store={store} packages={Object.values(activatedPackages)} />,
+    );
     const chunkNames = flushChunkNames();
 
     const { cssHashRaw, scripts, stylesheets } = flushChunks(ref.clientStats, { chunkNames });
@@ -90,7 +92,7 @@ export default ref => async (req, res) => {
     const chunksForArray = scriptsWithoutBootstrap.map(script => `'${script}'`).join(',');
     const bootstrapString = await readFile(
       `${buildPath}/.build/pwa/client/${bootstrapFileName}`,
-      'utf8'
+      'utf8',
     );
 
     const preloadScripts = scriptsWithoutBootstrap
@@ -98,7 +100,10 @@ export default ref => async (req, res) => {
       .join('\n');
 
     const loadStyles = stylesheets
-      .map(style => `<link rel="stylesheet" charset="utf-8" type="text/css" href="${publicPath}static/${style}" />`)
+      .map(
+        style =>
+          `<link rel="stylesheet" charset="utf-8" type="text/css" href="${publicPath}static/${style}" />`,
+      )
       .join('\n');
 
     const cssHash = JSON.stringify(mapValues(cssHashRaw, hash => `${publicPath}static/${hash}`));
@@ -146,7 +151,7 @@ export default ref => async (req, res) => {
               ${bootstrapString}
             </script>
           </body>
-        </html>`
+        </html>`,
     );
   } catch (error) {
     res.status(500).send(error);
