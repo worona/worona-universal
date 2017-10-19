@@ -6,7 +6,7 @@ import { clientReactRendered } from '../extensions/build/actions';
 import Swipe from '../extensions/Swipe';
 
 const Slide = ({ key, length }) => (
-  <div key={key}>
+  <div key={key} style={{ fontWeight: 'bold', fontSize: '20px' }}>
     {Array(length)
       .fill(0)
       .map((e, num) => <p>{num}</p>)}
@@ -17,7 +17,7 @@ const Slider = ({ slides }) => (
   <Swipe index={0}>
     {Array(slides)
       .fill(0)
-      .map((e, num) => <Slide key={num} length={num}/>)}
+      .map((e, num) => <Slide key={num} length={30}/>)}
   </Swipe>
 )
 
