@@ -2,35 +2,60 @@
   "env": {
     "devClient": {
       "presets": [
-        ["env", {
-          "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
-          "useBuiltIns": "usage"
-        }],
-        "react",
-        "stage-2"
+        [
+          "env",
+          {
+            "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
+            "useBuiltIns": "usage"
+          }
+        ],
+        "react"
       ],
-      "plugins": [["emotion", { "inline": true }], "./babel-plugin-universal-import", "react-hot-loader/babel"],
+      "plugins": [
+        ["emotion", { "inline": true }],
+        "syntax-dynamic-import",
+        "transform-object-rest-spread",
+        "transform-class-properties",
+        "./babel-plugin-universal-import",
+        "react-hot-loader/babel"
+      ]
     },
     "prodClient": {
       "presets": [
-        ["env", {
-          "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
-          "useBuiltIns": "usage"
-        }],
-        "react",
-        "stage-2"
+        [
+          "env",
+          {
+            "targets": { "browsers": ["android >= 4.4", "ios_saf > 9", "and_chr >= 56"] },
+            "useBuiltIns": "usage"
+          }
+        ],
+        "react"
       ],
-      "plugins": [["emotion", { "inline": true }], "./babel-plugin-universal-import"],
+      "plugins": [
+        ["emotion", { "inline": true }],
+        "syntax-dynamic-import",
+        "transform-object-rest-spread",
+        "transform-class-properties",
+        "./babel-plugin-universal-import"
+      ]
     },
     "server": {
       "presets": [
-        ["env", {
-          "targets": { "node": "current" }
-        }],
-        "react",
-        "stage-2"
+        [
+          "env",
+          {
+            "targets": { "node": "current" }
+          }
+        ],
+        "react"
       ],
-      "plugins": [["emotion", { "inline": true }], "./babel-plugin-universal-import"],
+      "plugins": [
+        ["emotion", { "inline": true }],
+        "syntax-dynamic-import",
+        "transform-object-rest-spread",
+        "transform-class-properties",
+        "./babel-plugin-universal-import"
+      ]
     }
   }
 }
