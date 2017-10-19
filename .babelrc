@@ -9,7 +9,7 @@
         "react",
         "stage-2"
       ],
-      "plugins": [["emotion", { "inline": true }], "universal-import", "react-hot-loader/babel"],
+      "plugins": [["emotion", { "inline": true }], "./babel-plugin-universal-import", "react-hot-loader/babel"],
     },
     "prodClient": {
       "presets": [
@@ -20,7 +20,7 @@
         "react",
         "stage-2"
       ],
-      "plugins": [["emotion", { "inline": true }], "universal-import"],
+      "plugins": [["emotion", { "inline": true }], "./babel-plugin-universal-import"],
     },
     "server": {
       "presets": [
@@ -30,7 +30,7 @@
         "react",
         "stage-2"
       ],
-      "plugins": [["emotion", { "inline": true }], "universal-import"],
+      "plugins": [["emotion", { "inline": true }], "./babel-plugin-universal-import"],
     }
   }
 }
