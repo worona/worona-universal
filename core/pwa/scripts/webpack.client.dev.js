@@ -29,9 +29,9 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            forceEnv: 'devClient'
+            forceEnv: 'devClient',
           },
-        }
+        },
       },
       {
         test: /\.css$/,
