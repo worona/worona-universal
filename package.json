@@ -57,7 +57,8 @@
     "worona-deps": "^2.0.3",
     "worona-polyfills": "^1.0.0"
   },
-  "devDepencendies": {
+  "devDependencies": {
+    "babel-eslint": "^8.0.1",
     "eslint": "^4.8.0",
     "eslint-config-airbnb": "^15.1.0",
     "eslint-config-prettier": "^2.6.0",
