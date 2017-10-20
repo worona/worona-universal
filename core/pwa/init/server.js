@@ -118,6 +118,8 @@ export default ref => async (req, res) => {
           ${helmet.meta.toString()}
           ${helmet.link.toString()}
           <style>${css}</style>
+          <!-- test -->
+          <style>html,body{margin:0;padding:0;}</style>
         </head>
         <body ${helmet.bodyAttributes.toString()}>
           <div id="root">${html}</div>

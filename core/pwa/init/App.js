@@ -1,44 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { Helmet } from 'react-helmet';
+// import { Helmet } from 'react-helmet';
 import { clientReactRendered } from '../extensions/build/actions';
-import Swipe from '../extensions/Swipe';
+import Slider from './Slider';
 
-const Slide = ({ key, length }) => (
-  <div key={key} style={{ fontWeight: 'bold', fontSize: '20px' }}>
-    {Array(length)
-      .fill(0)
-      .map((e, num) => <p>{num}</p>)}
-  </div>
-);
-
-const Slider = ({ slides }) => (
-  <Swipe index={0}>
-    {Array(slides)
-      .fill(0)
-      .map((e, num) => <Slide key={num} length={30}/>)}
-  </Swipe>
-)
-
-const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
-  <div key={2}>{colorAndNumber}</div>,
-  <button key={3} onClick={toggleColor}>
-    Togglee
-  </button>,
-  <Helmet key={4}>
-    <title>Worona</title>
-  </Helmet>,
-];
+// const Color = ({ color = 'red', colorAndNumber = 'red and 7', toggleColor = () => {} }) => [
+//   <div key={2}>{colorAndNumber}</div>,
+//   <button key={3} onClick={toggleColor}>
+//     Togglee
+//   </button>,
+//   <Helmet key={4}>
+//     <title>Worona</title>
+//   </Helmet>,
+// ];
 
 class App extends React.Component {
   componentDidMount() {
     this.props.store.dispatch(clientReactRendered());
   }
+
   render() {
     return (
       <Provider store={this.props.store}>
-        <Slider slides={5} />
+        <Slider slides={5} store={this.props.store} handleChangeIndex={this.handleChangeIndex} />
       </Provider>
     );
   }

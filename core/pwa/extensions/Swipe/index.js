@@ -69,10 +69,13 @@ class Swipe extends Component {
       adjust: false,
     };
 
+    this.fromProps = false;
+
     this.slideStyles = Array(props.children.length)
       .fill(0)
       .map((e, index) => slide({ index, active: this.state.active }));
 
+    this.handleScroll = this.handleScroll.bind(this);
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
@@ -87,6 +90,10 @@ class Swipe extends Component {
         passive: false,
       });
     }
+
+    if (window) {
+      window.addEventListener('scroll', this.handleScroll);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -98,7 +105,14 @@ class Swipe extends Component {
 
     if (!isSwiping && index !== active) {
       console.log('index changed using props');
-      scrolls[active] = document.scrollingElement.scrollTop;
+      this.fromProps = true;
+      // document.scrollingElement.scrollTop is now the scroll restored by history.
+      // Last scroll has been saved on scroll listener
+      // Restores our scroll
+      console.log('restores our scroll')
+      document.scrollingElement.scrollTop = scrolls[index];
+      console.log('scroll is now', document.scrollingElement.scrollTop);
+      // scrolls[index] = document.scrollingElement.scrollTop;
       this.adjustChildrenPositions(active);
       setTimeout(this.changeActiveSlide(index));
     }
@@ -110,13 +124,19 @@ class Swipe extends Component {
 
   componentWillUnmount() {
     this.ref.removeEventListener('touchmove', this.handleTouchMove);
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll() {
+    console.log(this.scrolls)
+    this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
   }
 
   handleTouchStart({ targetTouches, target }) {
     this.initialTouch.pageX = targetTouches[0].pageX;
     this.initialTouch.pageY = targetTouches[0].pageY;
     this.preventSwipe = parentScrollableX(target);
-    this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
+    // this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
   }
 
   handleTouchMove(e) {
@@ -199,7 +219,7 @@ class Swipe extends Component {
   }
 
   handleSelect({ target }) {
-    this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
+    // this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
     this.adjustChildrenPositions(this.state.active);
     setTimeout(this.changeActiveSlide(parseInt(target.value, 10)));
   }
@@ -221,11 +241,16 @@ class Swipe extends Component {
     this.ref.style.transform = `translateX(calc(${100 * (next - active)}% + ${dx}px))`;
     document.scrollingElement.scrollTop = this.scrolls[next];
 
+    console.log('changeActiveSlide', this.fromProps);
+
     this.setState({ active: next }, () => {
       this.ref.style.transition = `transform 350ms cubic-bezier(0.15, 0.3, 0.25, 1)`;
       this.ref.style.transform = `translateX(0)`;
-      if (onChangeIndex) onChangeIndex(this.state.active);
+      if (onChangeIndex) onChangeIndex({ index: this.state.active, fromProps: this.fromProps });
+
+      this.fromProps = false;
     });
+
   }
 
   adjustChildrenPositions(active) {
@@ -261,6 +286,7 @@ class Swipe extends Component {
         <div style={limiter}>
           <div
             style={list}
+            onScroll={this.handleScroll}
             onTouchStartCapture={this.handleTouchStart}
             onTouchEnd={this.handleTouchEnd}
             onTransitionEnd={this.handleTransitionEnd}

@@ -1,6 +1,6 @@
 import { fork, take, takeEvery, put, all } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
-import createHistory from 'history/createBrowserHistory'
+import createHistory from 'history/createBrowserHistory';
 import worona from 'worona-deps';
 import * as actions from '../actions';
 import * as types from '../types';
@@ -8,21 +8,23 @@ import * as types from '../types';
 
 let history;
 
-
 const getPathname = ({ currentType, currentId }) => `/dummypath/${currentType}/${currentId}`;
 
 const routeChanged = () =>
   eventChannel(emitter => {
     const unlisten = history.listen(location => {
-      console.log('INSIDE LISTEN');
+      console.log('INSIDE LISTEN (route has changed)');
+      console.log('current scroll (may has been restored)', {
+        window: window.scrollY,
+        scrolling: document.scrollingElement.scrollTop,
+      });
       const { pathname, state } = location;
       emitter({ pathname, ...state });
-    })
+    });
     return unlisten;
   });
 
 function* routeChangeSaga() {
-
   yield take('build/CLIENT_SAGAS_INITIALIZED');
   history = createHistory();
   worona.history = history;
@@ -33,7 +35,19 @@ function* routeChangeSaga() {
   // Track router events and dispatch them to redux.
   yield takeEvery(routeChangedEvents, function* handleChange(changed) {
     yield put(actions.routeChangeSucceed(changed));
-  })
+    console.log('JUST AFTER SUCCEED')
+    console.log('current scroll (may has been restored)', {
+      window: window.scrollY,
+      scrolling: document.scrollingElement.scrollTop,
+    });
+    setTimeout(() => {
+      console.log('JUST AFTER TIMEOUT')
+      console.log('current scroll (may has been restored)', {
+        window: window.scrollY,
+        scrolling: document.scrollingElement.scrollTop,
+      });
+    })
+  });
 
   yield takeEvery(types.ROUTE_CHANGE_REQUESTED, requested => {
     const { currentType } = requested;
