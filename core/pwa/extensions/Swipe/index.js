@@ -136,7 +136,8 @@ class Swipe extends Component {
     this.initialTouch.pageX = targetTouches[0].pageX;
     this.initialTouch.pageY = targetTouches[0].pageY;
     this.preventSwipe = parentScrollableX(target);
-    // this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
+    this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
+    console.log(this.scrolls)
   }
 
   handleTouchMove(e) {
@@ -235,6 +236,9 @@ class Swipe extends Component {
     const { onChangeIndex } = this.props;
 
     this.isSwiping = true;
+    console.log('BEFORE INDEX CHANGE');
+    if (onChangeIndex) onChangeIndex({ index: next, fromProps: this.fromProps });
+    console.log('AFTER INDEX CHANGE');
 
     this.adjustChildrenPositions(next);
     this.ref.style.transition = `transform 0ms ease-out`;
@@ -246,8 +250,6 @@ class Swipe extends Component {
     this.setState({ active: next }, () => {
       this.ref.style.transition = `transform 350ms cubic-bezier(0.15, 0.3, 0.25, 1)`;
       this.ref.style.transform = `translateX(0)`;
-      if (onChangeIndex) onChangeIndex({ index: this.state.active, fromProps: this.fromProps });
-
       this.fromProps = false;
     });
 
