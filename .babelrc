@@ -16,7 +16,7 @@
         "syntax-dynamic-import",
         "transform-object-rest-spread",
         "transform-class-properties",
-        "./babel-plugin-universal-import",
+        "universal-import",
         "react-hot-loader/babel"
       ]
     },
@@ -36,7 +36,7 @@
         "syntax-dynamic-import",
         "transform-object-rest-spread",
         "transform-class-properties",
-        "./babel-plugin-universal-import"
+        "universal-import"
       ]
     },
     "server": {
@@ -54,7 +54,7 @@
         "syntax-dynamic-import",
         "transform-object-rest-spread",
         "transform-class-properties",
-        "./babel-plugin-universal-import"
+        "universal-import"
       ]
     }
   }
