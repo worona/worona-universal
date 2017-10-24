@@ -100,6 +100,10 @@ class Swipe extends Component {
   componentDidMount() {
     // Adds non-passive event listener for touchmove
     if (this.ref) {
+      this.ref.addEventListener('touchstart', this.handleTouchStart, {
+        passive: false,
+        capture: true,
+      });
       this.ref.addEventListener('touchmove', this.handleTouchMove, {
         passive: false,
       });
@@ -143,12 +147,12 @@ class Swipe extends Component {
   }
 
   componentWillUnmount() {
+    this.ref.removeEventListener('touchstart', this.handleTouchStart);
     this.ref.removeEventListener('touchmove', this.handleTouchMove);
     window.removeEventListener('scroll', this.handleScroll);
   }
 
   handleScroll() {
-    console.log(this.scrolls);
     this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
   }
 
@@ -165,7 +169,6 @@ class Swipe extends Component {
     this.initialTouch.pageY = targetTouches[0].pageY;
     this.preventSwipe = parentScrollableX(target);
     this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
-    console.log(this.scrolls);
   }
 
   handleTouchMove(e) {
@@ -210,7 +213,13 @@ class Swipe extends Component {
     }
   }
 
-  handleTouchEnd() {
+  handleTouchEnd(e) {
+    // Avoids swipe and scroll when is swiping or bouncing
+    if (this.isSwiping || isScrollBouncing()) {
+      e.preventDefault();
+      return;
+    }
+
     this.preventSwipe = false;
 
     const next = this.nextSlidePosition();
@@ -271,15 +280,15 @@ class Swipe extends Component {
 
   moveTo(next) {
     const { onChangeIndex } = this.props;
-
     this.isSwiping = true;
     if (onChangeIndex) onChangeIndex({ index: next, fromProps: false });
 
     const { active } = this.state;
     const move = (active - next) * 100; // percentage
 
+
     this.ref.style.transition = `transform 350ms ease-out`;
-    this.ref.style.transform = `translateX(${move}%)`;
+    this.ref.style.transform = this.dx ? `translateX(${move}%)` : 'none';
   }
 
   handleSelect({ target }) {
@@ -288,26 +297,29 @@ class Swipe extends Component {
   }
 
   returnToCurrentSlide() {
-    this.ref.style.transition = `transform 350ms ease-out`;
-    this.ref.style.transform = this.dx ? `translateX(0)` : 'none';
+    if (this.dx) {
+      this.isSwiping = true;
+      this.ref.style.transition = `transform 350ms ease-out`;
+      this.ref.style.transform = `translateX(0)`;
+    } else {
+      this.isSwiping = false;
+      this.ref.style.transition = `transform 0ms ease-out`;
+      this.ref.style.transform = 'none';
+    }
   }
 
   changeActiveSlide(next) {
     const { dx } = this;
     const { active } = this.state;
     const { onChangeIndex } = this.props;
-
     this.isSwiping = true;
-    console.log('BEFORE INDEX CHANGE');
     if (onChangeIndex) onChangeIndex({ index: next, fromProps: this.fromProps });
-    console.log('AFTER INDEX CHANGE');
 
     this.adjustChildrenPositions(next);
     this.ref.style.transition = `transform 0ms ease-out`;
     this.ref.style.transform = `translateX(calc(${100 * (next - active)}% + ${dx}px))`;
     document.scrollingElement.scrollTop = this.scrolls[next];
 
-    console.log('changeActiveSlide', this.fromProps);
 
     this.setState({ active: next }, () => {
       this.ref.style.transition = `transform 350ms ease-out`;
@@ -320,7 +332,6 @@ class Swipe extends Component {
     this.adjustChildrenPositions(next);
     this.setState({ active: next }, () => {
       document.scrollingElement.scrollTop = this.scrolls[next];
-      console.log('AFTER RENDER');
     });
   }
 
@@ -341,7 +352,6 @@ class Swipe extends Component {
   }
 
   render() {
-    console.log('render SWIPE');
 
     const children = React.Children.map(this.props.children, (child, index) => (
       <div className={'slide'} style={this.slideStyles[index]} index={index} key={index}>
@@ -359,7 +369,7 @@ class Swipe extends Component {
           <div
             style={list}
             onScroll={this.handleScroll}
-            onTouchStartCapture={this.handleTouchStart}
+            // onTouchStartCapture={this.handleTouchStart}
             onTouchEnd={this.handleTouchEnd}
             onTransitionEnd={this.handleTransitionEnd}
             ref={ref => {
