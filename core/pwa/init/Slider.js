@@ -4,7 +4,23 @@ import { connect } from 'react-redux';
 import Swipe from '../extensions/Swipe';
 import { routeChangeRequested } from '../extensions/router/actions';
 
-const list = ['000', '001', '002', '003', '004'];
+const list = [
+  '000',
+  '001',
+  '002',
+  '003',
+  '004',
+  '005',
+  '006',
+  '007',
+  '008',
+  '009',
+  '010',
+  '011',
+  '012',
+  '013',
+  '014',
+];
 const listType = 'posts';
 
 const currentSwipe = {
@@ -12,7 +28,23 @@ const currentSwipe = {
   active: 0,
 };
 
-const slideColors = ['indianred', 'darkseagreen', 'cadetblue', 'salmon', 'lightyellow'];
+const slideColors = [
+  'indianred',
+  'darkseagreen',
+  'cadetblue',
+  'salmon',
+  'lightyellow',
+  'indianred',
+  'darkseagreen',
+  'cadetblue',
+  'salmon',
+  'lightyellow',
+  'indianred',
+  'darkseagreen',
+  'cadetblue',
+  'salmon',
+  'lightyellow',
+];
 
 const Slide = ({ index, length }) => (
   <div style={{ fontWeight: 'bold', fontSize: '20px', backgroundColor: slideColors[index] }}>
