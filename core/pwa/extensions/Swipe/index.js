@@ -364,7 +364,6 @@ class Swipe extends Component {
           <div
             style={list}
             onScroll={this.handleScroll}
-            // onTouchStartCapture={this.handleTouchStart}
             onTouchEnd={this.handleTouchEnd}
             onTransitionEnd={this.handleTransitionEnd}
             ref={ref => {
