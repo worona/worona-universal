@@ -81,6 +81,13 @@ class Swipe extends Component {
     this.handleTouchEnd = this.handleTouchEnd.bind(this);
     this.handleTransitionEnd = this.handleTransitionEnd.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
+
+    // new methods
+    this.animateTo = this.animateTo.bind(this);
+    this.updateActiveSlide = this.updateActiveSlide.bind(this);
+
+    // RESOLVERS
+    this.resolvers = {};
   }
 
   componentDidMount() {
@@ -120,6 +127,14 @@ class Swipe extends Component {
 
   shouldComponentUpdate(nextProps, { adjust }) {
     return !adjust;
+  }
+
+  componentWillUpdate() {
+    // Overrides transform property.
+    this.ref.style.transition = `transform 0ms cubic-bezier(0.15, 0.3, 0.25, 1)`;
+    this.ref.style.transform = `none`;
+    this.fromProps = false;
+    this.isSwiping = false;
   }
 
   componentWillUnmount() {
@@ -195,7 +210,8 @@ class Swipe extends Component {
 
     // Slide is changing
     if (next !== this.state.active) {
-      this.changeActiveSlide(next);
+      // this.changeActiveSlide(next);
+      this.animateTo(next).then(this.updateActiveSlide);
     } else {
       this.returnToCurrentSlide();
     }
@@ -210,6 +226,11 @@ class Swipe extends Component {
     // Ignores transitionEnd events from children.
     if (this.ref !== target) return;
 
+    console.log('transition END', this.resolvers);
+    Object.getOwnPropertySymbols(this.resolvers).forEach(sym => {
+      this.resolvers[sym]();
+    });
+
     // Overrides transform property.
     this.ref.style.transform = `none`;
     // Defers execution of the 'onTransitionEnd' callback.
@@ -217,6 +238,27 @@ class Swipe extends Component {
       if (onTransitionEnd) setTimeout(onTransitionEnd);
       this.isSwiping = false;
     }
+  }
+
+  animateTo(next) {
+    this.isSwiping = true;
+
+    const { active } = this.state;
+    const move = (active - next) * 100; // percentage
+
+    this.ref.style.transition = `transform 350ms cubic-bezier(0.15, 0.3, 0.25, 1)`;
+    this.ref.style.transform = `translateX(${move}%)`;
+
+    console.log('new promise created');
+    // Build a promise that will be resolved when transition ends.
+    return new Promise((resolve) => {
+      const sym = Symbol('resolver');
+      const resolver = () => {
+        delete this.resolvers[sym];
+        resolve(next);
+      }
+      this.resolvers[sym] = resolver;
+    });
   }
 
   handleSelect({ target }) {
@@ -253,6 +295,12 @@ class Swipe extends Component {
       this.fromProps = false;
     });
 
+  }
+
+  updateActiveSlide(next) {
+
+    this.adjustChildrenPositions(next);
+    this.setState({ active: next });
   }
 
   adjustChildrenPositions(active) {
