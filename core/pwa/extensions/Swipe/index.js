@@ -116,7 +116,7 @@ class Swipe extends Component {
       // document.scrollingElement.scrollTop is now the scroll restored by history.
       // Last scroll has been saved on scroll listener
       // Restores our scroll
-      console.log('restores our scroll')
+      console.log('restores our scroll');
       document.scrollingElement.scrollTop = scrolls[index];
       console.log('scroll is now', document.scrollingElement.scrollTop);
       // scrolls[index] = document.scrollingElement.scrollTop;
@@ -130,6 +130,9 @@ class Swipe extends Component {
   }
 
   componentWillUpdate() {
+    console.log('BEFORE RENDER');
+
+    if (this.isSwiping) return;
     // Overrides transform property.
     this.ref.style.transition = `transform 0ms cubic-bezier(0.15, 0.3, 0.25, 1)`;
     this.ref.style.transform = `none`;
@@ -143,7 +146,7 @@ class Swipe extends Component {
   }
 
   handleScroll() {
-    console.log(this.scrolls)
+    console.log(this.scrolls);
     this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
   }
 
@@ -152,7 +155,7 @@ class Swipe extends Component {
     this.initialTouch.pageY = targetTouches[0].pageY;
     this.preventSwipe = parentScrollableX(target);
     this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
-    console.log(this.scrolls)
+    console.log(this.scrolls);
   }
 
   handleTouchMove(e) {
@@ -226,11 +229,6 @@ class Swipe extends Component {
     // Ignores transitionEnd events from children.
     if (this.ref !== target) return;
 
-    console.log('transition END', this.resolvers);
-    Object.getOwnPropertySymbols(this.resolvers).forEach(sym => {
-      this.resolvers[sym]();
-    });
-
     // Overrides transform property.
     this.ref.style.transform = `none`;
     // Defers execution of the 'onTransitionEnd' callback.
@@ -238,10 +236,20 @@ class Swipe extends Component {
       if (onTransitionEnd) setTimeout(onTransitionEnd);
       this.isSwiping = false;
     }
+
+    console.log('transition END', this.resolvers);
+    Object.getOwnPropertySymbols(this.resolvers).forEach(sym => {
+      this.resolvers[sym]();
+    });
   }
 
   animateTo(next) {
+    const { onChangeIndex } = this.props;
+
     this.isSwiping = true;
+    console.log('BEFORE INDEX CHANGE');
+    if (onChangeIndex) onChangeIndex({ index: next, fromProps: false });
+    console.log('AFTER INDEX CHANGE');
 
     const { active } = this.state;
     const move = (active - next) * 100; // percentage
@@ -251,12 +259,12 @@ class Swipe extends Component {
 
     console.log('new promise created');
     // Build a promise that will be resolved when transition ends.
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const sym = Symbol('resolver');
       const resolver = () => {
         delete this.resolvers[sym];
         resolve(next);
-      }
+      };
       this.resolvers[sym] = resolver;
     });
   }
@@ -294,13 +302,14 @@ class Swipe extends Component {
       this.ref.style.transform = `translateX(0)`;
       this.fromProps = false;
     });
-
   }
 
   updateActiveSlide(next) {
-
     this.adjustChildrenPositions(next);
-    this.setState({ active: next });
+    this.setState({ active: next }, () => {
+      document.scrollingElement.scrollTop = this.scrolls[next];
+      console.log('AFTER RENDER');
+    });
   }
 
   adjustChildrenPositions(active) {
