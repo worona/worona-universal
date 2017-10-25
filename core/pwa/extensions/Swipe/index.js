@@ -363,7 +363,6 @@ class Swipe extends Component {
         <div style={limiter}>
           <div
             style={list}
-            onScroll={this.handleScroll}
             onTouchEnd={this.handleTouchEnd}
             onTransitionEnd={this.handleTransitionEnd}
             ref={ref => {
