@@ -93,8 +93,6 @@ class Swipe extends Component {
     this.moveTo = this.moveTo.bind(this);
     this.updateActiveSlide = this.updateActiveSlide.bind(this);
 
-    // RESOLVERS
-    this.resolvers = {};
   }
 
   componentDidMount() {
