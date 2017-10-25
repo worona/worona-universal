@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swipe from '../extensions/Swipe';
 import { routeChangeRequested } from '../extensions/router/actions';
-import fakePost from './fakePost';
 
 const list = [
   '000',
@@ -96,8 +95,7 @@ class Slider extends Component {
       <Swipe index={currentSwipe.list.indexOf(currentId)} onChangeIndex={this.handleChangeIndex}>
         {Array(slides)
           .fill(0)
-          /* .map((e, i) => <Slide index={i} length={30} />)} */
-          .map((e, i) => <div index={i} dangerouslySetInnerHTML={{ __html: fakePost }} />)}
+          .map((e, i) => <Slide index={i} length={30} />)}
       </Swipe>
     );
   }

@@ -23,7 +23,7 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={this.props.store}>
-        <Slider slides={3} store={this.props.store} handleChangeIndex={this.handleChangeIndex} />
+        <Slider slides={15} store={this.props.store} handleChangeIndex={this.handleChangeIndex} />
       </Provider>
     );
   }
