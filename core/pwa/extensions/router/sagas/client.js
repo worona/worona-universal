@@ -13,11 +13,6 @@ const getPathname = ({ currentType, currentId }) => `/dummypath/${currentType}/$
 const routeChanged = () =>
   eventChannel(emitter => {
     const unlisten = history.listen(location => {
-      console.log('INSIDE LISTEN (route has changed)');
-      console.log('current scroll (may has been restored)', {
-        window: window.scrollY,
-        scrolling: document.scrollingElement.scrollTop,
-      });
       const { pathname, state } = location;
       emitter({ pathname, ...state });
     });
@@ -35,18 +30,6 @@ function* routeChangeSaga() {
   // Track router events and dispatch them to redux.
   yield takeEvery(routeChangedEvents, function* handleChange(changed) {
     yield put(actions.routeChangeSucceed(changed));
-    console.log('JUST AFTER SUCCEED')
-    console.log('current scroll (may has been restored)', {
-      window: window.scrollY,
-      scrolling: document.scrollingElement.scrollTop,
-    });
-    setTimeout(() => {
-      console.log('JUST AFTER TIMEOUT')
-      console.log('current scroll (may has been restored)', {
-        window: window.scrollY,
-        scrolling: document.scrollingElement.scrollTop,
-      });
-    })
   });
 
   yield takeEvery(types.ROUTE_CHANGE_REQUESTED, requested => {
@@ -56,8 +39,6 @@ function* routeChangeSaga() {
     else if (currentType === 'forward') history.goForward();
     else {
       history.push(getPathname(requested), requested);
-      console.log('JUST AFTER PUSH');
-      // window.scrollTo(0,0);
     }
   });
 }
