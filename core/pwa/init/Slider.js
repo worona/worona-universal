@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Swipe from '../extensions/Swipe';
-import { routeChangeRequested } from '../extensions/router/actions';
+import * as selectors from '../extensions/router/selectors';
+import * as actions from '../extensions/router/actions';
+// import { routeChangeRequested } from '../extensions/router/actions';
+// import * as selectors from '../extensions/router/selectors'
 
 const list = [
   '000',
@@ -90,9 +93,10 @@ class Slider extends Component {
   }
 
   render() {
-    const { currentId, slides } = this.props;
+    const { id, slides } = this.props;
+    console.log('CURRENT ID IS', id)
     return (
-      <Swipe index={currentSwipe.list.indexOf(currentId)} onChangeIndex={this.handleChangeIndex}>
+      <Swipe index={currentSwipe.list.indexOf(id)} onChangeIndex={this.handleChangeIndex}>
         {Array(slides)
           .fill(0)
           .map((e, i) => <Slide index={i} length={30} />)}
@@ -103,18 +107,18 @@ class Slider extends Component {
 
 Slider.propTypes = {
   slides: PropTypes.number.isRequired,
-  // currentType: PropTypes.string.isRequired,
-  currentId: PropTypes.string.isRequired,
+  // type: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   changeRoute: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = state => ({
-  currentType: state.router.currentType,
-  currentId: state.router.currentId,
+  type: selectors.getType(state),
+  id: selectors.getId(state),
 });
 
 const mapDispatchToProps = dispatch => ({
-  changeRoute: typeAndId => dispatch(routeChangeRequested(typeAndId)),
+  changeRoute: typeAndId => dispatch(actions.routeChangeRequested(typeAndId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Slider);
