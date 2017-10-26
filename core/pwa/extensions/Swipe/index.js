@@ -23,13 +23,6 @@ const isScrollBouncing = () => {
 
 // STYLES
 
-const slide = ({ index, active }) => ({
-  width: '100%',
-  display: 'inline-block',
-  position: index === active ? 'relative' : 'absolute',
-  left: `${100 * (index - active)}%`,
-});
-
 const list = {
   minHeight: '100vh',
 };
@@ -78,10 +71,6 @@ class Swipe extends Component {
       adjust: false,
     };
 
-    this.slideStyles = Array(props.children.length)
-      .fill(0)
-      .map((e, index) => slide({ index, active: this.state.active }));
-
     this.handleScroll = this.handleScroll.bind(this);
     this.handleTouchStart = this.handleTouchStart.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
@@ -123,10 +112,8 @@ class Swipe extends Component {
 
       // Restores last scroll for the new slide.
       document.scrollingElement.scrollTop = scrolls[index];
-      this.adjustChildrenPositions(active);
-
-      // After children position adjusts
-      setTimeout(this.changeActiveSlide(index));
+      
+      this.adjustChildrenPositions(() => this.changeActiveSlide(index));
     }
   }
 
@@ -183,7 +170,7 @@ class Swipe extends Component {
       this.initialTouch.pageX = currentTouch.pageX;
       this.initialTouch.pageY = currentTouch.pageY;
 
-      if (this.isMovingHorizontally) this.adjustChildrenPositions(this.state.active);
+      if (this.isMovingHorizontally) this.adjustChildrenPositions();
     }
 
     if (this.isMoving && this.isMovingHorizontally) {
@@ -299,8 +286,9 @@ class Swipe extends Component {
   }
 
   handleSelect({ target }) {
-    this.adjustChildrenPositions(this.state.active);
-    setTimeout(this.changeActiveSlide(parseInt(target.value, 10)));
+    this.adjustChildrenPositions(() => {
+      this.changeActiveSlide(parseInt(target.value, 10))
+    });
   }
 
   changeActiveSlide(next) {
@@ -310,7 +298,7 @@ class Swipe extends Component {
     this.isSwiping = true;
     if (onChangeIndex) onChangeIndex({ index: next, fromProps: this.fromProps });
 
-    this.adjustChildrenPositions(next);
+    this.adjustChildrenPositions();
     this.ref.style.transition = `transform 0ms ease-out`;
     this.ref.style.transform = `translateX(calc(${100 * (next - active)}% + ${dx}px))`;
     document.scrollingElement.scrollTop = this.scrolls[next];
@@ -323,34 +311,40 @@ class Swipe extends Component {
   }
 
   updateActiveSlide(next) {
-    this.adjustChildrenPositions(next);
+    this.adjustChildrenPositions();
     this.setState({ active: next }, () => {
       document.scrollingElement.scrollTop = this.scrolls[next];
     });
   }
 
-  adjustChildrenPositions(active) {
-    const { slideStyles, scrolls } = this;
-
-    for (let i = 0; i < slideStyles.length; i += 1) {
-      const style = slideStyles[i];
-      const left = `${100 * (i - active)}%`;
-      const position = i !== active ? 'absolute' : 'relative';
-      const transform = i !== active ? `translateY(${scrolls[active] - scrolls[i]}px)` : 'none';
-
-      slideStyles[i] = Object.assign({ ...style }, { position, transform, left });
-    }
-
-    // Updates without forcing it
-    this.setState({ adjust: true }, () => this.setState({ adjust: false }));
+  adjustChildrenPositions(cb) {
+    // Updates state without forcing an update.
+    this.setState({ adjust: true }, () => {
+      this.setState({ adjust: false });
+      if (cb) cb();
+    });
   }
 
   render() {
-    const children = React.Children.map(this.props.children, (child, index) => (
-      <div className={'slide'} style={this.slideStyles[index]} index={index} key={index}>
-        <child.type {...child.props} />
-      </div>
-    ));
+    const { active } = this.state;
+    const { scrolls } = this;
+
+    const children = React.Children.map(this.props.children, (child, i) => {
+
+      const slideStyle = {
+        width: '100%',
+        display: 'inline-block',
+        left: `${100 * (i - active)}%`,
+        position: i !== active ? 'absolute' : 'relative',
+        transform: i !== active ? `translateY(${scrolls[active] - scrolls[i]}px)` : 'none',
+      }
+
+      return (
+        <div className={'slide'} style={slideStyle} index={i} key={i}>
+          <child.type {...child.props} />
+        </div>
+      );
+    });
 
     const options = React.Children.map(this.props.children, (child, index) => (
       <option value={index}>{index + 1}</option>
