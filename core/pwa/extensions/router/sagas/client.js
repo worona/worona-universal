@@ -1,9 +1,10 @@
-import { fork, take, takeEvery, put, all } from 'redux-saga/effects';
+import { fork, take, takeEvery, put, all, select } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import createHistory from 'history/createBrowserHistory';
 import worona from 'worona-deps';
 import * as actions from '../actions';
 import * as types from '../types';
+import * as selectors from '../selectors';
 // import gtmSagas from './gtm';
 
 let history;
@@ -24,6 +25,12 @@ function* routeChangeSaga() {
   history = createHistory();
   worona.history = history;
 
+  // Appropriately replaces current path.
+  const currentType = yield select(selectors.getType);
+  const currentId = yield select(selectors.getId);
+  const routeParams = { currentType, currentId };
+  history.replace(getPathname(routeParams), routeParams);
+
   // Initializate router event channels.
   const routeChangedEvents = routeChanged();
 
@@ -33,13 +40,7 @@ function* routeChangeSaga() {
   });
 
   yield takeEvery(types.ROUTE_CHANGE_REQUESTED, requested => {
-    const { currentType } = requested;
-
-    if (currentType === 'back') history.goBack();
-    else if (currentType === 'forward') history.goForward();
-    else {
-      history.push(getPathname(requested), requested);
-    }
+    history.push(getPathname(requested), requested);
   });
 }
 

@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import * as types from '../types';
 
-export const currentType = (state = 'posts', action) => {
+export const type = (state = 'posts', action) => {
   if (action.type === types.ROUTE_CHANGE_SUCCEED) return action.currentType || null;
   return state;
 };
 
-export const currentId = (state = '000', action) => {
+export const id = (state = '000', action) => {
   if (action.type === types.ROUTE_CHANGE_SUCCEED) return action.currentId || null;
   return state;
 };
@@ -17,7 +17,7 @@ export const pathname = (state = '/', action) => {
 };
 
 export default combineReducers({
-  currentType,
-  currentId,
+  type,
+  id,
   pathname,
 });
