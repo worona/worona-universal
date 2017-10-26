@@ -49,23 +49,25 @@ const slideColors = [
   'lightyellow',
 ];
 
-const Slide = ({ index, length }) => (
-  <div style={{ fontWeight: 'bold', fontSize: '20px', backgroundColor: slideColors[index] }}>
-    {times(length, i => (
-      <p
-        key={`p${i}`}
-        style={{
-          margin: 0,
-          padding: '10px 0',
-          borderTop: '1px solid black',
-          textAlign: 'center',
-        }}
-      >
-        {i}
-      </p>
-    ))}
-  </div>
-);
+const Slide = ({ index, length }) => {
+  const slideStyle = { fontWeight: 'bold', fontSize: '20px', backgroundColor: slideColors[index] };
+  const numberStyle = {
+    margin: 0,
+    padding: '10px 0',
+    borderTop: '1px solid black',
+    textAlign: 'center',
+  };
+
+  return (
+    <div style={slideStyle}>
+      {times(length, i => (
+        <p key={`p${i}`} style={numberStyle}>
+          {i}
+        </p>
+      ))}
+    </div>
+  );
+};
 
 Slide.propTypes = {
   index: PropTypes.number.isRequired,
