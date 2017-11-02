@@ -132,12 +132,6 @@ class Swipe extends Component {
     this.isSwiping = false;
   }
 
-  componentDidUpdate() {
-    const { isSwiping } = this;
-    const { active } = this.state;
-    console.log(isSwiping, active)
-  }
-
   componentWillUnmount() {
     this.ref.removeEventListener('touchstart', this.handleTouchStart);
     this.ref.removeEventListener('touchmove', this.handleTouchMove);
