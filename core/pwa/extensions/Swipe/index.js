@@ -112,8 +112,10 @@ class Swipe extends Component {
 
       // Restores last scroll for the new slide.
       document.scrollingElement.scrollTop = scrolls[index];
-      
-      this.adjustChildrenPositions(() => this.changeActiveSlide(index));
+
+      this.setState({ adjust: true }, () => {
+        this.changeActiveSlide(index)
+      });
     }
   }
 
@@ -128,6 +130,12 @@ class Swipe extends Component {
     this.ref.style.transform = `none`;
     this.fromProps = false;
     this.isSwiping = false;
+  }
+
+  componentDidUpdate() {
+    const { isSwiping } = this;
+    const { active } = this.state;
+    console.log(isSwiping, active)
   }
 
   componentWillUnmount() {
@@ -170,7 +178,9 @@ class Swipe extends Component {
       this.initialTouch.pageX = currentTouch.pageX;
       this.initialTouch.pageY = currentTouch.pageY;
 
-      if (this.isMovingHorizontally) this.adjustChildrenPositions();
+      if (this.isMovingHorizontally) {
+        this.setState({ adjust: true }, () => this.setState({ adjust: false }));
+      }
     }
 
     if (this.isMoving && this.isMovingHorizontally) {
@@ -286,7 +296,7 @@ class Swipe extends Component {
   }
 
   handleSelect({ target }) {
-    this.adjustChildrenPositions(() => {
+    this.setState({ adjust: true }, () => {
       this.changeActiveSlide(parseInt(target.value, 10))
     });
   }
@@ -298,12 +308,11 @@ class Swipe extends Component {
     this.isSwiping = true;
     if (onChangeIndex) onChangeIndex({ index: next, fromProps: this.fromProps });
 
-    this.adjustChildrenPositions();
     this.ref.style.transition = `transform 0ms ease-out`;
     this.ref.style.transform = `translateX(calc(${100 * (next - active)}% + ${dx}px))`;
     document.scrollingElement.scrollTop = this.scrolls[next];
 
-    this.setState({ active: next }, () => {
+    this.setState({ active: next, adjust: false }, () => {
       this.ref.style.transition = `transform 350ms ease-out`;
       this.ref.style.transform = `translateX(0)`;
       this.fromProps = false;
@@ -311,17 +320,8 @@ class Swipe extends Component {
   }
 
   updateActiveSlide(next) {
-    this.adjustChildrenPositions();
     this.setState({ active: next }, () => {
       document.scrollingElement.scrollTop = this.scrolls[next];
-    });
-  }
-
-  adjustChildrenPositions(cb) {
-    // Updates state without forcing an update.
-    this.setState({ adjust: true }, () => {
-      this.setState({ adjust: false });
-      if (cb) cb();
     });
   }
 
