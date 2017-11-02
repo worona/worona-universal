@@ -93,17 +93,30 @@ class Slider extends Component {
   }
 
   render() {
-    const { id, slides } = this.props;
+    const { id, count } = this.props;
+    const slideIds = times(count, i => i);
+
+    // Emulating scroll in first slide
+    const twoFirstSlides = slideIds.splice(0,2);
+    slideIds.unshift(twoFirstSlides);
+
+    console.log(slideIds);
+
     return (
       <Swipe index={currentSwipe.list.indexOf(id)} onChangeIndex={this.handleChangeIndex}>
-        {times(slides, i => <Slide key={`slide-${i}`} index={i} length={30} />)}
+        {slideIds.map(i => {
+          if (i instanceof Array) {
+            return <div>{i.map(j => <Slide key={`slide-${j}`} index={j} length={30} />)}</div>;
+          }
+          return <Slide key={`slide-${i}`} index={i} length={30 + (30 * (i % 2))} />;
+        })}
       </Swipe>
     );
   }
 }
 
 Slider.propTypes = {
-  slides: PropTypes.number.isRequired,
+  count: PropTypes.number.isRequired,
   // type: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   changeRoute: PropTypes.func.isRequired,
