@@ -38,6 +38,7 @@ const container = {
   width: '100%',
   height: '100%',
   overflowX: 'hidden',
+  overflow: 'hidden',
 };
 
 const select = {
@@ -140,6 +141,7 @@ class Swipe extends Component {
 
   handleScroll() {
     this.scrolls[this.state.active] = document.scrollingElement.scrollTop;
+    // this.setState({ adjust: true }, () => this.setState({ adjust: false }));
   }
 
   handleTouchStart(e) {

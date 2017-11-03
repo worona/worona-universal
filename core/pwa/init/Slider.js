@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { times } from 'lodash';
+import LazyLoad from 'react-lazyload';
+import Waypoint from 'react-waypoint';
 import Swipe from '../extensions/Swipe';
 import * as selectors from '../extensions/router/selectors';
 import * as actions from '../extensions/router/actions';
@@ -60,11 +62,29 @@ const Slide = ({ index, length }) => {
 
   return (
     <div style={slideStyle}>
-      {times(length, i => (
-        <p key={`p${i}`} style={numberStyle}>
-          {i}
-        </p>
-      ))}
+      {[
+        times(length, i => (i === 20
+          ? <Waypoint
+              key={`${index}_${i}`}
+              onEnter={() => console.log(`enter waypoint ${index}`)}
+              onLeave={() => console.log(`leave waypoint ${index}`)}
+              scrollableAncestor={'window'}
+              fireOnRapidScroll={false}
+            >
+              <div style={{ border: 'solid 2px yellow'}}>
+                <p key={`p${i}`} style={numberStyle}>{i}</p>
+              </div>
+            </Waypoint>
+          : <p key={`p${i}`} style={numberStyle}>{i}</p>
+        )),
+        <LazyLoad
+          offset={-100}
+          unmountIfInvisible
+          placeholder={<div style={numberStyle}>{'not loaded yet'}</div>}
+        >
+          <div style={numberStyle}>{'LAZY LOADED'}</div>
+        </LazyLoad>,
+      ]}
     </div>
   );
 };
